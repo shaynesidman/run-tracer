@@ -1,4 +1,5 @@
 "use client";
+
 import { useRef, useEffect } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -23,7 +24,7 @@ export default function Map() {
     return (
         <div
             ref={mapContainer}
-            className="w-full h-full rounded-lg"
+            className="rounded-lg w-[1200px] h-[500px]"
         />
     );
 }
