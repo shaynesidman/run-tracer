@@ -23,7 +23,7 @@ export default function Map() {
     return (
         <div
             ref={mapContainer}
-            className="w-[100vw] h-[100vh]"
+            className="w-full h-full rounded-lg"
         />
     );
 }
