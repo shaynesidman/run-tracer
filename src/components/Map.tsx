@@ -18,8 +18,8 @@ export default function Map() {
         map.current = new mapboxgl.Map({
             container: mapContainer.current,
             style: "mapbox://styles/mapbox/streets-v12",
-            center: [-74.5, 40],
-            zoom: 12,
+            center: [-71.1062, 42.4184],
+            zoom: 13,
         });
 
         map.current.on("click", (e) => {
