@@ -16,6 +16,22 @@ export default function Map() {
     const [totalDistance, setTotalDistance] = useState(0);
 
     useEffect(() => {
+        if (map.current || !mapContainer.current) return;
+    
+        map.current = new mapboxgl.Map({
+            container: mapContainer.current,
+            style: "mapbox://styles/mapbox/streets-v12",
+            center: [-71.1062, 42.4184],
+            zoom: 13,
+        });
+    
+        map.current.on("click", (e) => {
+            const lngLat: [number, number] = [e.lngLat.lng, e.lngLat.lat];
+            setPoints((prev) => [...prev, lngLat]);
+        });
+    }, []);
+
+    useEffect(() => {
         if (!map.current) return;
     
         const mapInstance = map.current;
