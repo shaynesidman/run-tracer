@@ -6,14 +6,19 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import type { Feature, LineString } from 'geojson';
 import distance from "@turf/distance";
 import { point } from "@turf/helpers";
+import destination from "@turf/destination";
+import { point as turfPoint } from "@turf/helpers";
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_REACT_APP_MAPBOX_TOKEN!;
 
 export default function Map() {
     const mapContainer = useRef<HTMLDivElement | null>(null);
     const map = useRef<mapboxgl.Map | null>(null);
+    
     const [points, setPoints] = useState<[number, number][]>([]);
     const [totalDistance, setTotalDistance] = useState(0);
+    const [isGeneratingRoute, setIsGeneratingRoute] = useState(false);
+    const [targetDistance, setTargetDistance] = useState(1); // in miles
 
     useEffect(() => {
         if (map.current || !mapContainer.current) return;
@@ -25,10 +30,25 @@ export default function Map() {
             zoom: 13,
         });
     
-        map.current.on("click", (e) => {
-            const lngLat: [number, number] = [e.lngLat.lng, e.lngLat.lat];
-            setPoints((prev) => [...prev, lngLat]);
-        });
+        map.current.on("click", async (e) => {
+            const start: [number, number] = [e.lngLat.lng, e.lngLat.lat];
+        
+            if (isGeneratingRoute) {
+                try {
+                    const route = await fetchLoopRoute(start, targetDistance);
+                    if (route) {
+                        const coords = route.geometry.coordinates as [number, number][];
+                        setPoints(coords);
+                    }
+                } catch (err) {
+                    console.error("Error fetching route:", err);
+                } finally {
+                    setIsGeneratingRoute(false);
+                }
+            } else {
+                setPoints((prev) => [...prev, start]);
+            }
+        });        
     }, []);
 
     useEffect(() => {
@@ -80,13 +100,55 @@ export default function Map() {
                 "line-width": 4,
             },
         });
-    }, [points]);    
+    }, [points]);   
+    
+    async function fetchLoopRoute(start: [number, number], miles: number) {
+        const startPoint = turfPoint(start);
+    
+        // Compute a midpoint X miles away in a random direction
+        const bearing = Math.random() * 360; // 0–360°
+        const midPoint = destination(startPoint, miles / 2, bearing, { units: "miles" }).geometry.coordinates;
+    
+        const coords = [
+            start.join(","),
+            midPoint.join(","),
+            start.join(","),
+        ].join(";");
+    
+        const url = `https://api.mapbox.com/directions/v5/mapbox/walking/${coords}?geometries=geojson&access_token=${mapboxgl.accessToken}`;
+    
+        const res = await fetch(url);
+        const data = await res.json();
+    
+        if (!data.routes || data.routes.length === 0) {
+            console.warn("No routes found");
+            return null;
+        }
+    
+        return data.routes[0]; // returns GeoJSON route
+    }
 
     return (
         <div className="w-full h-full relative">
             <div ref={mapContainer} className="w-full h-full" />
-            <div className="absolute top-2 left-2 bg-white bg-opacity-90 p-2 rounded shadow text-sm font-semibold z-10">
-                Total Distance: {totalDistance.toFixed(2)} mi
+            <div className="absolute top-2 left-2 bg-white bg-opacity-90 p-2 rounded shadow text-sm font-semibold z-10 space-y-2">
+                <div>
+                    <label className="mr-2">Target Distance:</label>
+                    <input
+                        type="number"
+                        value={targetDistance}
+                        onChange={(e) => setTargetDistance(Number(e.target.value))}
+                        className="w-20 border rounded px-1 py-0.5 text-black"
+                    />
+                    <span className="ml-1">mi</span>
+                </div>
+                <button
+                    onClick={() => setIsGeneratingRoute(true)}
+                    className="mt-1 bg-blue-500 text-white px-2 py-1 rounded text-xs hover:bg-blue-600"
+                >
+                    Generate Route on Click
+                </button>
+                <div>Total Distance: {totalDistance.toFixed(2)} mi</div>
             </div>
         </div>
     );
