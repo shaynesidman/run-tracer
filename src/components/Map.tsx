@@ -18,6 +18,7 @@ export default function Map() {
     const [points, setPoints] = useState<[number, number][]>([]);
     const [totalDistance, setTotalDistance] = useState(0);
     const [isGeneratingRoute, setIsGeneratingRoute] = useState(false);
+    const isGeneratingRouteRef = useRef(false);
     const [targetDistance, setTargetDistance] = useState(1); // in miles
 
     useEffect(() => {
@@ -32,8 +33,8 @@ export default function Map() {
     
         map.current.on("click", async (e) => {
             const start: [number, number] = [e.lngLat.lng, e.lngLat.lat];
-        
-            if (isGeneratingRoute) {
+    
+            if (isGeneratingRouteRef.current) {
                 try {
                     const route = await fetchLoopRoute(start, targetDistance);
                     if (route) {
@@ -48,8 +49,13 @@ export default function Map() {
             } else {
                 setPoints((prev) => [...prev, start]);
             }
-        });        
-    }, []);
+        });
+    }, []);    
+
+    useEffect(() => {
+        isGeneratingRouteRef.current = isGeneratingRoute;
+    }, [isGeneratingRoute]);
+    
 
     useEffect(() => {
         if (!map.current) return;
@@ -100,6 +106,26 @@ export default function Map() {
                 "line-width": 4,
             },
         });
+
+        map.current.on("click", async (e) => {
+            const start: [number, number] = [e.lngLat.lng, e.lngLat.lat];
+        
+            if (isGeneratingRoute) {
+                try {
+                    const route = await fetchLoopRoute(start, targetDistance);
+                    if (route) {
+                        const coords = route.geometry.coordinates as [number, number][];
+                        setPoints(coords);
+                    }
+                } catch (err) {
+                    console.error("Error fetching route:", err);
+                } finally {
+                    setIsGeneratingRoute(false);
+                }
+            } else {
+                setPoints((prev) => [...prev, start]);
+            }
+        });
     }, [points]);   
     
     async function fetchLoopRoute(start: [number, number], miles: number) {
@@ -114,6 +140,8 @@ export default function Map() {
             midPoint.join(","),
             start.join(","),
         ].join(";");
+
+        console.log(coords)
     
         const url = `https://api.mapbox.com/directions/v5/mapbox/walking/${coords}?geometries=geojson&access_token=${mapboxgl.accessToken}`;
     
@@ -124,6 +152,8 @@ export default function Map() {
             console.warn("No routes found");
             return null;
         }
+
+        console.log(data.routes)
     
         return data.routes[0]; // returns GeoJSON route
     }
@@ -143,11 +173,12 @@ export default function Map() {
                     <span className="ml-1">mi</span>
                 </div>
                 <button
-                    onClick={() => setIsGeneratingRoute(true)}
+                    onClick={() => setIsGeneratingRoute(!isGeneratingRoute)}
                     className="mt-1 bg-blue-500 text-white px-2 py-1 rounded text-xs hover:bg-blue-600"
                 >
                     Generate Route on Click
                 </button>
+                {isGeneratingRoute && <div>Generating route</div>}
                 <div>Total Distance: {totalDistance.toFixed(2)} mi</div>
             </div>
         </div>
