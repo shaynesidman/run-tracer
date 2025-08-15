@@ -30,8 +30,7 @@ export default function Map() {
             center: [-71.1062, 42.4184],
             zoom: 13,
         });
-        
-    
+
         map.current.on("click", async (e) => {
             const start: [number, number] = [e.lngLat.lng, e.lngLat.lat];
     
