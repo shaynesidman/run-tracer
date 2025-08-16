@@ -3,7 +3,7 @@ import NavBar from "@/components/NavBar";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Run Tracer",
+  title: "RunTracer | Plan and track your runs",
   description: "Simply draw a line and run",
 };
 
