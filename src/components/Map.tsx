@@ -8,6 +8,7 @@ import distance from "@turf/distance";
 import { point } from "@turf/helpers";
 import destination from "@turf/destination";
 import { point as turfPoint } from "@turf/helpers";
+import { useUser } from "@clerk/nextjs";
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_REACT_APP_MAPBOX_TOKEN!;
 
@@ -22,6 +23,8 @@ export default function Map() {
     const [mode, setMode] = useState<"click" | "route" | "draw">("click");
 
     const isDrawingRef = useRef(false);
+
+    const { user } = useUser();
 
     useEffect(() => {
         if (map.current || !mapContainer.current) return;
@@ -191,8 +194,25 @@ export default function Map() {
         setTotalDistance(0);
     };
 
-    const submitRoute = () => {
+    const submitRoute = async () => {
         if (points.length < 2) return; // Ensure there are actually points in route
+        if (!user) return; // Ensure user is logged in before sending to db
+
+        try {
+            const res = await fetch("/api/store", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    points,
+                    totalDistance,
+                    start: points[0],
+                }),
+            })
+        } catch (error) {
+
+        }
+
+        clearPoints(); // Remove saved route
     }
 
     return (
@@ -246,12 +266,12 @@ export default function Map() {
                 <div className="flex justify-center gap-2">
                     <button
                         onClick={clearPoints}
-                        className="px-2 py-1 rounded text-xs bg-red-500 text-white hover:bg-red-600"
+                        className="px-2 py-1 rounded text-xs bg-red-500 text-white hover:bg-red-600 transform duration-200"
                     >
                         Clear Route
                     </button>
                     <button
-                        className="px-2 py-1 rounded text-xs bg-green-500 text-white hover:bg-green-600"
+                        className="px-2 py-1 rounded text-xs bg-green-500 text-white hover:bg-green-600 transform duration-200"
                         onClick={submitRoute}
                     >
                         Submit Route
