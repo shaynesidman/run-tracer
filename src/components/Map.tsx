@@ -191,13 +191,17 @@ export default function Map() {
         setTotalDistance(0);
     };
 
+    const submitRoute = () => {
+        if (points.length < 2) return; // Ensure there are actually points in route
+    }
+
     return (
         <div className="w-full h-full relative">
             <div ref={mapContainer} className="w-full h-full" />
 
-            <div className="absolute top-2 left-2 bg-white bg-opacity-90 p-2 rounded shadow text-sm font-semibold z-10 space-y-2">
+            <div className="absolute top-2 left-2 flex flex-col gap-1 bg-white bg-opacity-90 p-2 rounded shadow text-sm font-semibold z-10 space-y-2">
                 {/* Mode Selection */}
-                <div className="space-x-1">
+                <div className="flex gap-1">
                     <button
                         onClick={() => setMode("click")}
                         className={`px-2 py-1 rounded text-xs ${
@@ -239,13 +243,20 @@ export default function Map() {
                 )}
 
                 <div>Total Distance: {totalDistance.toFixed(2)} mi</div>
-                
-                <button
-                    onClick={clearPoints}
-                    className="px-2 py-1 rounded text-xs bg-red-500 text-white hover:bg-red-600"
-                >
-                    Clear Route
-                </button>
+                <div className="flex justify-center gap-2">
+                    <button
+                        onClick={clearPoints}
+                        className="px-2 py-1 rounded text-xs bg-red-500 text-white hover:bg-red-600"
+                    >
+                        Clear Route
+                    </button>
+                    <button
+                        className="px-2 py-1 rounded text-xs bg-green-500 text-white hover:bg-green-600"
+                        onClick={submitRoute}
+                    >
+                        Submit Route
+                    </button>
+                </div>
             </div>
         </div>
     );
