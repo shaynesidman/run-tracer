@@ -159,7 +159,7 @@ export default function Map() {
                 "line-cap": "round",
             },
             paint: {
-                "line-color": "#fc4c02",
+                "line-color": "#2E7D32",
                 "line-width": 4,
             },
         });
