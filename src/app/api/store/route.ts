@@ -3,7 +3,7 @@ import { auth } from "@clerk/nextjs/server";
 import { supabase } from "@/lib/supabase";
 
 export async function POST(req: NextRequest) {
-    const userId = await auth();
+    const { userId } = await auth();
 
     if (!userId) {
         return NextResponse.json({ error: "Unauthorized: User not logged in" }, { status: 401 });
@@ -15,9 +15,7 @@ export async function POST(req: NextRequest) {
         .from("activities")
         .insert({ type: "run", points: points, distance: totalDistance, start: start, userId: userId });
         
-    if (error) {
-        return NextResponse.json({ error: "Postgres error"}, { status: 500 });
-    }
+    if (error) return NextResponse.json({ error: "Postgres error"}, { status: 500 });
 
     return NextResponse.json({ status: 200 });
 }

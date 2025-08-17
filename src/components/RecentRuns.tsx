@@ -1,7 +1,29 @@
 import { useAuth } from "@clerk/nextjs";
+import { useState, useEffect } from "react";
 
 export default function RecentRuns() {
+    const [recentRuns, setRecentRuns] = useState(null);
+
     const { userId, isLoaded } = useAuth();
+
+    useEffect(() => {
+        fetchActivities();
+    }, []);
+
+    const fetchActivities = async () => {
+        try {
+            const res = await fetch("/api/fetch", {
+                method: "GET",
+                headers: { "Content-Type": "application/json" }
+            });
+
+            const data = await res.json();
+            setRecentRuns(data.data);
+            console.log(data.data)
+        } catch (error) {
+
+        }
+    };
 
     if (!isLoaded) {
         return (
