@@ -16,9 +16,9 @@ export default function RootLayout({
     return (
         <ClerkProvider>
             <html lang="en">
-                <body className="relative h-screen flex flex-col">
+                <body className="h-screen flex flex-col">
                     <NavBar />
-                    <main className="flex-1">
+                    <main className="flex-1 bg-fixed bg-gradient-to-br from-green-900 via-zinc-800 to-zinc-800">
                         {children}
                     </main>
                 </body>

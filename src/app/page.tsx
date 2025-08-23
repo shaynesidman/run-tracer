@@ -7,7 +7,7 @@ export default function Home() {
     const router = useRouter();
 
     return (
-        <section className="bg-fixed bg-gradient-to-br from-green-900 via-zinc-800 to-zinc-800 h-full flex justify-center">
+        <section className="h-full flex justify-center">
             <div className="h-full max-w-5xl mx-auto p-4 flex flex-col justify-center items-center gap-6 text-white">
                 <p className="text-3xl text-center">Plan and track your runs, walks, bikes, and more with ease.</p>
                 <p className="textl-lg text-center">Welcome to RunTracer – the simplest way to map your runs, walks, and bike rides. Whether you're training for a marathon, going on a casual stroll, or cycling new terrain, our intuitive map lets you draw your route and see your distance instantly.</p>
