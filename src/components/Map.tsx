@@ -31,7 +31,7 @@ export default function Map() {
     
         map.current = new mapboxgl.Map({
             container: mapContainer.current,
-            style: "mapbox://styles/mapbox/streets-v12",
+            style: "mapbox://styles/mapbox/dark-v11",
             center: [-71.1062, 42.4184],
             zoom: 13,
         });
@@ -162,7 +162,7 @@ export default function Map() {
                 "line-cap": "round",
             },
             paint: {
-                "line-color": "#2E7D32",
+                "line-color": "#1E90FF",
                 "line-width": 4,
             },
         });
@@ -219,7 +219,7 @@ export default function Map() {
         <div className="w-full h-full relative">
             <div ref={mapContainer} className="w-full h-full" />
 
-            <div className="absolute top-2 left-2 flex flex-col gap-1 bg-white bg-opacity-90 p-2 rounded shadow text-sm font-semibold z-10 space-y-2">
+            <div className="absolute bottom-2 left-2 flex flex-col gap-1 bg-white bg-opacity-90 p-2 rounded shadow text-sm font-semibold z-10 space-y-2">
                 {/* Mode Selection */}
                 <div className="flex gap-1">
                     <button
