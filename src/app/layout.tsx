@@ -16,10 +16,14 @@ export default function RootLayout({
     return (
         <ClerkProvider>
             <html lang="en">
-                <body className="h-screen flex flex-col">
-                    <NavBar />
-                    <main className="flex-1 bg-fixed bg-gradient-to-br from-green-900 via-zinc-800 to-zinc-800">
-                        {children}
+                <body>
+                    <main>
+                        <div className="w-full min-h-screen flex flex-col bg-fixed bg-gradient-to-br from-green-900 via-zinc-800 to-zinc-800">
+                            <NavBar />
+                            <div className="flex-1 flex justify-center items-center">
+                                {children}
+                            </div>
+                        </div>  
                     </main>
                 </body>
             </html>
