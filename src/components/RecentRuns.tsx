@@ -13,16 +13,15 @@ export default function RecentRuns() {
 
     const fetchActivities = async () => {
         try {
-            const res = await fetch("/api/fetch", {
+            const res = await fetch("/api/fetch/allRuns", {
                 method: "GET",
                 headers: { "Content-Type": "application/json" }
             });
 
             const data = await res.json();
             setRecentRuns(data.data);
-            console.log(data.data)
         } catch (error) {
-
+            console.log(error);
         }
     };
 
