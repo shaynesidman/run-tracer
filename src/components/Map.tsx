@@ -216,32 +216,32 @@ export default function Map() {
     }
 
     return (
-        <div className="w-full h-full relative">
+        <div className="w-full h-full relative text=">
             <div ref={mapContainer} className="w-full h-full" />
 
-            <div className="absolute bottom-2 left-2 flex flex-col gap-1 bg-white bg-opacity-90 p-2 rounded shadow text-sm font-semibold z-10 space-y-2">
+            <div className="absolute bottom-8 left-2 flex flex-col gap-1 text-sm font-semibold space-y-2 px-6 py-4 rounded-lg bg-white/2.5 border border-white/50 backdrop-blur-sm shadow-[inset_0_1px_0px_rgba(255,255,255,0.75),0_0_9px_rgba(0,0,0,0.2),0_3px_8px_rgba(0,0,0,0.15)] before:absolute before:inset-0 before:rounded-lg before:bg-gradient-to-br before:from-white/60 before:via-transparent before:to-transparent before:opacity-70 before:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:bg-gradient-to-tl after:from-white/30 after:via-transparent after:to-transparent after:opacity-50 after:pointer-events-none transition antialiased">
                 {/* Mode Selection */}
                 <div className="flex gap-1">
                     <button
                         onClick={() => setMode("click")}
-                        className={`px-2 py-1 rounded text-xs ${
-                            mode === "click" ? "bg-blue-600 text-white" : "bg-gray-200"
+                        className={`px-2 py-1 rounded-lg text-xs hover:cursor-pointer ${
+                            mode === "click" ? "bg-blue-600 text-white" : "text-white bg-white/2.5 backdrop-blur-sm shadow-[inset_0_1px_0px_rgba(255,255,255,0.75),0_0_9px_rgba(0,0,0,0.2),0_3px_8px_rgba(0,0,0,0.15)] before:absolute before:inset-0 before:rounded-lg before:bg-gradient-to-br before:from-white/60 before:via-transparent before:to-transparent before:opacity-70 before:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:bg-gradient-to-tl after:from-white/30 after:via-transparent after:to-transparent after:opacity-50 after:pointer-events-none transition antialiased"
                         }`}
                     >
                         Click Mode
                     </button>
                     <button
                         onClick={() => setMode("route")}
-                        className={`px-2 py-1 rounded text-xs ${
-                            mode === "route" ? "bg-blue-600 text-white" : "bg-gray-200"
+                        className={`px-2 py-1 rounded-lg text-xs hover:cursor-pointer ${
+                            mode === "route" ? "bg-blue-600 text-white" : "text-white bg-white/2.5 backdrop-blur-sm shadow-[inset_0_1px_0px_rgba(255,255,255,0.75),0_0_9px_rgba(0,0,0,0.2),0_3px_8px_rgba(0,0,0,0.15)] before:absolute before:inset-0 before:rounded-lg before:bg-gradient-to-br before:from-white/60 before:via-transparent before:to-transparent before:opacity-70 before:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:bg-gradient-to-tl after:from-white/30 after:via-transparent after:to-transparent after:opacity-50 after:pointer-events-none transition antialiased"
                         }`}
                     >
                         Route Mode
                     </button>
                     <button
                         onClick={() => setMode("draw")}
-                        className={`px-2 py-1 rounded text-xs ${
-                            mode === "draw" ? "bg-blue-600 text-white" : "bg-gray-200"
+                        className={`px-2 py-1 rounded-lg text-xs hover:cursor-pointer ${
+                            mode === "draw" ? "bg-blue-600 text-white" : "text-white bg-white/2.5 backdrop-blur-sm shadow-[inset_0_1px_0px_rgba(255,255,255,0.75),0_0_9px_rgba(0,0,0,0.2),0_3px_8px_rgba(0,0,0,0.15)] before:absolute before:inset-0 before:rounded-lg before:bg-gradient-to-br before:from-white/60 before:via-transparent before:to-transparent before:opacity-70 before:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:bg-gradient-to-tl after:from-white/30 after:via-transparent after:to-transparent after:opacity-50 after:pointer-events-none transition antialiased"
                         }`}
                     >
                         Draw Mode
@@ -250,28 +250,28 @@ export default function Map() {
 
                 {/* Route mode extra controls */}
                 {mode === "route" && (
-                    <div>
+                    <div className="text-white">
                         <label className="mr-2">Target Distance:</label>
                         <input
                             type="number"
                             value={targetDistance}
                             onChange={(e) => setTargetDistance(Number(e.target.value))}
-                            className="w-20 border rounded px-1 py-0.5 text-black"
+                            className="w-20 border rounded px-1 py-0.5"
                         />
                         <span className="ml-1">mi</span>
                     </div>
                 )}
 
-                <div>Total Distance: {totalDistance.toFixed(2)} mi</div>
+                <div className="text-white">Total Distance: {totalDistance.toFixed(2)} mi</div>
                 <div className="flex justify-center gap-2">
                     <button
                         onClick={clearPoints}
-                        className="px-2 py-1 rounded text-xs bg-red-500 text-white hover:bg-red-600 transform duration-200"
+                        className="hover:cursor-pointer text-white rounded-lg px-2 py-1 bg-white/2.5 backdrop-blur-sm shadow-[inset_0_1px_0px_rgba(255,255,255,0.75),0_0_9px_rgba(0,0,0,0.2),0_3px_8px_rgba(0,0,0,0.15)] before:absolute before:inset-0 before:rounded-lg before:bg-gradient-to-br before:from-white/60 before:via-transparent before:to-transparent before:opacity-70 before:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:bg-gradient-to-tl after:from-white/30 after:via-transparent after:to-transparent after:opacity-50 after:pointer-events-none transition antialiased"
                     >
                         Clear Route
                     </button>
                     <button
-                        className="px-2 py-1 rounded text-xs bg-green-500 text-white hover:bg-green-600 transform duration-200"
+                        className="hover:cursor-pointer text-white rounded-lg px-2 py-1 bg-white/2.5 backdrop-blur-sm shadow-[inset_0_1px_0px_rgba(255,255,255,0.75),0_0_9px_rgba(0,0,0,0.2),0_3px_8px_rgba(0,0,0,0.15)] before:absolute before:inset-0 before:rounded-lg before:bg-gradient-to-br before:from-white/60 before:via-transparent before:to-transparent before:opacity-70 before:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:bg-gradient-to-tl after:from-white/30 after:via-transparent after:to-transparent after:opacity-50 after:pointer-events-none transition antialiased"
                         onClick={submitRoute}
                     >
                         Submit Route
