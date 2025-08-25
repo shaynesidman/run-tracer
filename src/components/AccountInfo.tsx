@@ -3,10 +3,11 @@
 import { useUser } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import AllRuns from "./AllRuns";
+import { type Activity } from "@/types/activity";
 
 export default function AccountInfo() {
     const [distance, setDistance] = useState(0);
+    const [totalActivities, setTotalActivities] = useState(0);
 
     const { isLoaded, isSignedIn, user } = useUser();
 
@@ -16,13 +17,14 @@ export default function AccountInfo() {
 
     const fetchAccountData = async () => {
         try {
-            const res = await fetch("/api/fetch/totalDistance", {
+            const res = await fetch("/api/fetch/allRuns", {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
             });
 
-            const totalDistance = await res.json();
-            setDistance(totalDistance.data);            
+            const allRuns = await res.json();
+            setDistance(allRuns.data.reduce((acc: number, row: Activity) => acc + row.distance, 0));
+            setTotalActivities(allRuns.data.length);           
         } catch (error) {
             console.log(error);
         }
@@ -93,7 +95,10 @@ export default function AccountInfo() {
                     <Image src={user.imageUrl} alt="No image" width={50} height={50} className="rounded-full" />
                 )}
             </div>
-            <p><span className="font-bold">Total Distance: </span>{distance.toFixed(2)} mi</p>
+            <div>
+                <p><span className="font-bold">Total Distance: </span>{distance.toFixed(2)} mi</p>
+                <p><span className="font-bold">Total Activities: </span>{totalActivities}</p>
+            </div>
         </div>
     );
 }
