@@ -18,7 +18,7 @@ export default function RootLayout({
             <html lang="en">
                 <body>
                     <main>
-                        <div className="w-full min-h-screen flex flex-col gap-3 bg-fixed bg-gradient-to-br from-green-900 via-zinc-800 to-zinc-800">
+                        <div className="w-full min-h-screen flex flex-col gap-3 bg-fixed bg-gradient-to-br from-sky-800 via-zinc-800 to-zinc-800">
                             <NavBar />
                             <div className="flex-1 flex justify-center items-center">
                                 {children}
