@@ -18,6 +18,7 @@ export default function NavBar() {
                 <h1 className="text-2xl hover:cursor-pointer" onClick={() => router.push("/")}>RunTracer</h1>
                 <div className="flex flex-row justify-center items-center gap-6">
                     <h3 className="hover:cursor-pointer" onClick={() => router.push("/map")}>Map</h3>
+                    <h3 className="hover:cursor-pointer" onClick={() => router.push("/about")}>About</h3>
                     <h3 className="hover:cursor-pointer" onClick={() => router.push("/account")}>Account</h3>
                     <SignedOut>
                         <div className="hover:cursor-pointer"><SignInButton /></div>
