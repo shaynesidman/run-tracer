@@ -19,6 +19,8 @@ export default function Map() {
     const [points, setPoints] = useState<[number, number][]>([]);
     const [totalDistance, setTotalDistance] = useState(0);
     const [targetDistance, setTargetDistance] = useState(1); // miles
+    const [submitting, setSubmitting] = useState(false);
+    const [showSuccess, setShowSuccess] = useState(false);
 
     const [mode, setMode] = useState<"click" | "route" | "draw">("click");
 
@@ -198,8 +200,10 @@ export default function Map() {
         if (points.length < 2) return; // Ensure there are actually points in route
         if (!user) return; // Ensure user is logged in before sending to db
 
+        setSubmitting(true);
+
         try {
-            const res = await fetch("/api/store", {
+            await fetch("/api/store", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -208,17 +212,50 @@ export default function Map() {
                     start: points[0],
                 }),
             })
-        } catch (error) {
 
+            clearPoints(); // Remove saved route
+            setShowSuccess(true);
+            setTimeout(() => setShowSuccess(false), 2000);
+        } catch (error) {
+            console.log(error);
         }
 
-        clearPoints(); // Remove saved route
+        setSubmitting(false);
     }
 
     return (
         <div className="w-full h-full relative text=">
             <div ref={mapContainer} className="w-full h-full" />
+            {submitting && (
+                <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center">
+                    <svg 
+                        className="animate-spin h-8 w-8 text-white/70" 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        fill="none" 
+                        viewBox="0 0 24 24"
+                    >
+                        <circle 
+                            className="opacity-25" 
+                            cx="12" 
+                            cy="12" 
+                            r="10" 
+                            stroke="currentColor" 
+                            strokeWidth="4"
+                        />
+                        <path 
+                            className="opacity-75" 
+                            fill="currentColor" 
+                            d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        />
+                    </svg>
+                </div>
+            )}
 
+            {showSuccess && (
+                <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 bg-green-600 text-white font-semibold px-4 py-2 rounded shadow-lg">
+                    Route submitted!
+                </div>
+            )}
             <div className="absolute bottom-9 left-2 flex flex-col gap-1 text-sm font-semibold space-y-2 px-6 py-4 rounded-lg bg-white/2.5 border border-white/50 backdrop-blur-sm shadow-[inset_0_1px_0px_rgba(255,255,255,0.75),0_0_9px_rgba(0,0,0,0.2),0_3px_8px_rgba(0,0,0,0.15)] before:absolute before:inset-0 before:rounded-lg before:bg-gradient-to-br before:from-white/60 before:via-transparent before:to-transparent before:opacity-70 before:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:bg-gradient-to-tl after:from-white/30 after:via-transparent after:to-transparent after:opacity-50 after:pointer-events-none transition antialiased">
                 {/* Mode Selection */}
                 <div className="flex gap-1">
