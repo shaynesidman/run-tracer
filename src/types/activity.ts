@@ -1,5 +1,3 @@
-import { Timestamp } from "next/dist/server/lib/cache-handlers/types"
-
 export type Activity = {
     id: number,
     time: string,
