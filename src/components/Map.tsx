@@ -31,28 +31,30 @@ export default function Map() {
 
     // useEffects
 
-    useEffect(() => {    
+    useEffect(() => {
         const fetchCoordinates = async () => {
             if (map.current || !mapContainer.current) return;
-
+    
             const coords: number[] = await getCoordinates();
-            
-            map.current = new mapboxgl.Map({
+    
+            const mapInstance = new mapboxgl.Map({
                 container: mapContainer.current,
                 style: "mapbox://styles/mapbox/dark-v11",
                 center: coords as [number, number],
                 zoom: 13,
             });
+    
+            map.current = mapInstance;
+    
+            setupMapListeners(mapInstance);
         };
-        
+    
         fetchCoordinates();
     }, []);
 
-    useEffect(() => {
-        if (!map.current) return;
-        const mapInstance = map.current;
-
-        // Enable/disable map interactions when switching modes
+    const setupMapListeners = (mapInstance: mapboxgl.Map) => {
+        if (!mapInstance) return;
+    
         if (mode === "draw") {
             mapInstance.dragPan.disable();
             mapInstance.dragRotate.disable();
@@ -60,11 +62,10 @@ export default function Map() {
             mapInstance.dragPan.enable();
             mapInstance.dragRotate.enable();
         }
-
-        // Click or route mode; draw/generate lines
+    
         const handleClick = async (e: mapboxgl.MapMouseEvent) => {
             if (mode === "draw") return;
-
+    
             const start: [number, number] = [e.lngLat.lng, e.lngLat.lat];
             if (mode === "route") {
                 try {
@@ -80,53 +81,42 @@ export default function Map() {
                 setPoints((prev) => [...prev, start]);
             }
         };
-
-        // Draw mode (hold to draw)
+    
         const handleMouseDown = (e: mapboxgl.MapMouseEvent) => {
             if (mode !== "draw") return;
             e.preventDefault();
             isDrawingRef.current = true;
             setPoints([[e.lngLat.lng, e.lngLat.lat]]);
         };
-
-        // Simple throttle (every 50ms)
+    
         let lastMove = 0;
         const handleMouseMove = (e: mapboxgl.MapMouseEvent) => {
             if (mode !== "draw" || !isDrawingRef.current) return;
-            
+    
             const now = Date.now();
             if (now - lastMove < 50) return;
             lastMove = now;
-            
+    
             setPoints((prev) => [...prev, [e.lngLat.lng, e.lngLat.lat]]);
         };
-
+    
         const handleMouseUp = (e: mapboxgl.MapMouseEvent) => {
             if (mode !== "draw") return;
             e.preventDefault();
             isDrawingRef.current = false;
         };
-
-        // Handle mouse leave to stop drawing if mouse leaves the map
+    
         const handleMouseLeave = () => {
             if (mode !== "draw") return;
             isDrawingRef.current = false;
         };
-
+    
         mapInstance.on("click", handleClick);
         mapInstance.on("mousedown", handleMouseDown);
         mapInstance.on("mousemove", handleMouseMove);
         mapInstance.on("mouseup", handleMouseUp);
         mapInstance.on("mouseleave", handleMouseLeave);
-
-        return () => {
-            mapInstance.off("click", handleClick);
-            mapInstance.off("mousedown", handleMouseDown);
-            mapInstance.off("mousemove", handleMouseMove);
-            mapInstance.off("mouseup", handleMouseUp);
-            mapInstance.off("mouseleave", handleMouseLeave);
-        };
-    }, [mode, targetDistance, map.current]);
+    };
 
     useEffect(() => {
         if (!map.current) return;
