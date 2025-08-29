@@ -28,15 +28,24 @@ export default function Map() {
 
     const { user } = useUser();
 
-    useEffect(() => {
-        if (map.current || !mapContainer.current) return;
-    
-        map.current = new mapboxgl.Map({
-            container: mapContainer.current,
-            style: "mapbox://styles/mapbox/dark-v11",
-            center: [-71.1062, 42.4184],
-            zoom: 13,
-        });
+    // useEffects
+
+    useEffect(() => {    
+        const fetchCoordinates = async () => {
+            if (map.current || !mapContainer.current) return;
+
+            const coords: number[] = await getCoordinates();
+            console.log(coords);
+            
+            map.current = new mapboxgl.Map({
+                container: mapContainer.current,
+                style: "mapbox://styles/mapbox/dark-v11",
+                center: coords as [number, number],
+                zoom: 13,
+            });
+        };
+        
+        fetchCoordinates();
     }, []);
 
     useEffect(() => {
@@ -170,7 +179,29 @@ export default function Map() {
         });
     }, [points]);
 
-    async function fetchLoopRoute(start: [number, number], miles: number) {
+    // Function defs
+
+    const getCoordinates = (): Promise<number[]> => {
+        return new Promise<number[]>((resolve) => {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => { 
+                        resolve([position.coords.longitude, position.coords.latitude]);
+                    },
+                    () => { 
+                        resolve([-71.1062, 42.4184]); // Default on error/denial
+                    },
+                    {
+                        enableHighAccuracy: true,
+                    }
+                );
+            } else {
+                resolve([-71.1062, 42.4184]); // Default when not supported
+            }
+        });
+    };
+
+    const fetchLoopRoute = async (start: [number, number], miles: number) => {
         const startPoint = turfPoint(start);
         const bearing = Math.random() * 360;
         const midPoint = destination(startPoint, miles / 2, bearing, {
@@ -184,7 +215,7 @@ export default function Map() {
         const data = await res.json();
 
         if (!data.routes || data.routes.length === 0) {
-            console.warn("No routes found");
+            console.log("No routes found");
             return null;
         }
 
