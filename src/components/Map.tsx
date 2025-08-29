@@ -230,6 +230,7 @@ export default function Map() {
     const submitRoute = async () => {
         if (points.length < 2) return; // Ensure there are actually points in route
         if (!user) return; // Ensure user is logged in before sending to db
+        if (activityType === "") setActivityType("run"); // Default to run if nothing entered
 
         setSubmitting(true);
 
@@ -336,6 +337,7 @@ export default function Map() {
                     <span>Activity Type:</span> 
                     <input 
                         className="w-37 px-2 border rounded text-white"
+                        placeholder="Run"
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                             setActivityType(e.target.value);
                         }}
