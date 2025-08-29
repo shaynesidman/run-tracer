@@ -19,7 +19,7 @@ export default function Map() {
     const [points, setPoints] = useState<[number, number][]>([]);
     const [totalDistance, setTotalDistance] = useState(0);
     const [targetDistance, setTargetDistance] = useState(1); // miles
-    const [activityType, setActivityType] = useState("");
+    const [activityType, setActivityType] = useState("Run");
     const [submitting, setSubmitting] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
 
@@ -230,7 +230,7 @@ export default function Map() {
     const submitRoute = async () => {
         if (points.length < 2) return; // Ensure there are actually points in route
         if (!user) return; // Ensure user is logged in before sending to db
-        if (activityType === "") setActivityType("run"); // Default to run if nothing entered
+        const chosenActivityType = activityType === "" ? "run" : activityType; // Default to run
 
         setSubmitting(true);
 
@@ -242,7 +242,7 @@ export default function Map() {
                     points,
                     totalDistance,
                     start: points[0],
-                    activityType,
+                    activityType: chosenActivityType,
                 }),
             });
 
