@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import type { Feature, LineString } from "geojson";
@@ -19,6 +19,7 @@ export default function Map() {
     const [points, setPoints] = useState<[number, number][]>([]);
     const [totalDistance, setTotalDistance] = useState(0);
     const [targetDistance, setTargetDistance] = useState(1); // miles
+    const [activityType, setActivityType] = useState("");
     const [submitting, setSubmitting] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
 
@@ -35,7 +36,6 @@ export default function Map() {
             if (map.current || !mapContainer.current) return;
 
             const coords: number[] = await getCoordinates();
-            console.log(coords);
             
             map.current = new mapboxgl.Map({
                 container: mapContainer.current,
@@ -107,7 +107,7 @@ export default function Map() {
             isDrawingRef.current = false;
         };
 
-        // Also handle mouse leave to stop drawing if mouse leaves the map
+        // Handle mouse leave to stop drawing if mouse leaves the map
         const handleMouseLeave = () => {
             if (mode !== "draw") return;
             isDrawingRef.current = false;
@@ -126,7 +126,7 @@ export default function Map() {
             mapInstance.off("mouseup", handleMouseUp);
             mapInstance.off("mouseleave", handleMouseLeave);
         };
-    }, [mode, targetDistance]);
+    }, [mode, targetDistance, map.current]);
 
     useEffect(() => {
         if (!map.current) return;
@@ -241,8 +241,9 @@ export default function Map() {
                     points,
                     totalDistance,
                     start: points[0],
+                    activityType,
                 }),
-            })
+            });
 
             clearPoints(); // Remove saved route
             setShowSuccess(true);
@@ -255,7 +256,7 @@ export default function Map() {
     }
 
     return (
-        <div className="w-full h-full relative text=">
+        <div className="w-full h-full relative">
             <div ref={mapContainer} className="w-full h-full" />
             {submitting && (
                 <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center">
@@ -331,6 +332,15 @@ export default function Map() {
                 )}
 
                 <div className="text-white">Total Distance: {totalDistance.toFixed(2)} mi</div>
+                <div className="text-white flex gap-4 items-center">
+                    <span>Activity Type:</span> 
+                    <input 
+                        className="w-37 px-2 border rounded text-white"
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            setActivityType(e.target.value);
+                        }}
+                    />
+                </div>
                 <div className="flex justify-center gap-2">
                     <button
                         onClick={clearPoints}

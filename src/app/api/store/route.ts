@@ -9,11 +9,11 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "Unauthorized: User not logged in" }, { status: 401 });
     }
 
-    const { points, totalDistance, start } = await req.json();
+    const { points, totalDistance, start, activityType } = await req.json();
 
     const { error } = await supabase
         .from("activities")
-        .insert({ type: "run", points: points, distance: totalDistance, start: start, userId: userId });
+        .insert({ type: activityType, points: points, distance: totalDistance, start: start, userId: userId });
         
     if (error) return NextResponse.json({ error: "Postgres error"}, { status: 500 });
 
