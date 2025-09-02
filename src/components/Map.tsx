@@ -50,7 +50,7 @@ export default function Map() {
         };
     
         fetchCoordinates();
-    }, []);
+    }, [mode]);
 
     const setupMapListeners = (mapInstance: mapboxgl.Map) => {
         if (!mapInstance) return;
@@ -84,6 +84,7 @@ export default function Map() {
     
         const handleMouseDown = (e: mapboxgl.MapMouseEvent) => {
             if (mode !== "draw") return;
+            console.log("saljdflksdf")
             e.preventDefault();
             isDrawingRef.current = true;
             setPoints([[e.lngLat.lng, e.lngLat.lat]]);
