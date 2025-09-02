@@ -52,16 +52,13 @@ export default function Map() {
         fetchCoordinates();
     }, [mode]);
 
+    useEffect(() => {
+        if (!map.current) return;
+        setupMapListeners(map.current);
+    }, [mode]);
+
     const setupMapListeners = (mapInstance: mapboxgl.Map) => {
         if (!mapInstance) return;
-    
-        if (mode === "draw") {
-            mapInstance.dragPan.disable();
-            mapInstance.dragRotate.disable();
-        } else {
-            mapInstance.dragPan.enable();
-            mapInstance.dragRotate.enable();
-        }
     
         const handleClick = async (e: mapboxgl.MapMouseEvent) => {
             if (mode === "draw") return;
@@ -112,6 +109,23 @@ export default function Map() {
             isDrawingRef.current = false;
         };
     
+        // Remove existing listeners to avoid duplication
+        mapInstance.off("click", handleClick);
+        mapInstance.off("mousedown", handleMouseDown);
+        mapInstance.off("mousemove", handleMouseMove);
+        mapInstance.off("mouseup", handleMouseUp);
+        mapInstance.off("mouseleave", handleMouseLeave);
+
+        // Set up drag interactions
+        if (mode === "draw") {
+            mapInstance.dragPan.disable();
+            mapInstance.dragRotate.disable();
+        } else {
+            mapInstance.dragPan.enable();
+            mapInstance.dragRotate.enable();
+        }
+
+        // Attach listeners
         mapInstance.on("click", handleClick);
         mapInstance.on("mousedown", handleMouseDown);
         mapInstance.on("mousemove", handleMouseMove);
