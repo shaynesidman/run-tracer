@@ -42,6 +42,9 @@ export default function Map() {
                 style: "mapbox://styles/mapbox/dark-v11",
                 center: coords as [number, number],
                 zoom: 13,
+                // Disable map interactions that interfere with drawing on mobile
+                touchZoomRotate: mode !== "draw",
+                doubleClickZoom: mode !== "draw",
             });
     
             map.current = mapInstance;
@@ -55,83 +58,20 @@ export default function Map() {
     useEffect(() => {
         if (!map.current) return;
         setupMapListeners(map.current);
-    }, [mode]);
-
-    const setupMapListeners = (mapInstance: mapboxgl.Map) => {
-        if (!mapInstance) return;
-    
-        const handleClick = async (e: mapboxgl.MapMouseEvent) => {
-            if (mode === "draw") return;
-    
-            const start: [number, number] = [e.lngLat.lng, e.lngLat.lat];
-            if (mode === "route") {
-                try {
-                    const route = await fetchLoopRoute(start, targetDistance);
-                    if (route) {
-                        const coords = route.geometry.coordinates as [number, number][];
-                        setPoints(coords);
-                    }
-                } catch (err) {
-                    console.error("Error fetching route:", err);
-                }
-            } else {
-                setPoints((prev) => [...prev, start]);
-            }
-        };
-    
-        const handleMouseDown = (e: mapboxgl.MapMouseEvent) => {
-            if (mode !== "draw") return;
-            console.log("saljdflksdf")
-            e.preventDefault();
-            isDrawingRef.current = true;
-            setPoints([[e.lngLat.lng, e.lngLat.lat]]);
-        };
-    
-        let lastMove = 0;
-        const handleMouseMove = (e: mapboxgl.MapMouseEvent) => {
-            if (mode !== "draw" || !isDrawingRef.current) return;
-    
-            const now = Date.now();
-            if (now - lastMove < 50) return;
-            lastMove = now;
-    
-            setPoints((prev) => [...prev, [e.lngLat.lng, e.lngLat.lat]]);
-        };
-    
-        const handleMouseUp = (e: mapboxgl.MapMouseEvent) => {
-            if (mode !== "draw") return;
-            e.preventDefault();
-            isDrawingRef.current = false;
-        };
-    
-        const handleMouseLeave = () => {
-            if (mode !== "draw") return;
-            isDrawingRef.current = false;
-        };
-    
-        // Remove existing listeners to avoid duplication
-        mapInstance.off("click", handleClick);
-        mapInstance.off("mousedown", handleMouseDown);
-        mapInstance.off("mousemove", handleMouseMove);
-        mapInstance.off("mouseup", handleMouseUp);
-        mapInstance.off("mouseleave", handleMouseLeave);
-
-        // Set up drag interactions
+        
+        // Update map interaction settings when mode changes
         if (mode === "draw") {
-            mapInstance.dragPan.disable();
-            mapInstance.dragRotate.disable();
+            map.current.touchZoomRotate.disable();
+            map.current.doubleClickZoom.disable();
+            map.current.dragPan.disable();
+            map.current.dragRotate.disable();
         } else {
-            mapInstance.dragPan.enable();
-            mapInstance.dragRotate.enable();
+            map.current.touchZoomRotate.enable();
+            map.current.doubleClickZoom.enable();
+            map.current.dragPan.enable();
+            map.current.dragRotate.enable();
         }
-
-        // Attach listeners
-        mapInstance.on("click", handleClick);
-        mapInstance.on("mousedown", handleMouseDown);
-        mapInstance.on("mousemove", handleMouseMove);
-        mapInstance.on("mouseup", handleMouseUp);
-        mapInstance.on("mouseleave", handleMouseLeave);
-    };
+    }, [mode]);
 
     useEffect(() => {
         if (!map.current) return;
@@ -185,6 +125,134 @@ export default function Map() {
     }, [points]);
 
     // Function defs
+
+    const setupMapListeners = (mapInstance: mapboxgl.Map) => {
+        if (!mapInstance) return;
+    
+        const handleClick = async (e: mapboxgl.MapMouseEvent) => {
+            if (mode === "draw") return;
+    
+            const start: [number, number] = [e.lngLat.lng, e.lngLat.lat];
+            if (mode === "route") {
+                try {
+                    const route = await fetchLoopRoute(start, targetDistance);
+                    if (route) {
+                        const coords = route.geometry.coordinates as [number, number][];
+                        setPoints(coords);
+                    }
+                } catch (err) {
+                    console.error("Error fetching route:", err);
+                }
+            } else {
+                setPoints((prev) => [...prev, start]);
+            }
+        };
+    
+        const handleMouseDown = (e: mapboxgl.MapMouseEvent) => {
+            if (mode !== "draw") return;
+            e.preventDefault();
+            isDrawingRef.current = true;
+            setPoints([[e.lngLat.lng, e.lngLat.lat]]);
+        };
+    
+        let lastMove = 0;
+        const handleMouseMove = (e: mapboxgl.MapMouseEvent) => {
+            if (mode !== "draw" || !isDrawingRef.current) return;
+    
+            const now = Date.now();
+            if (now - lastMove < 50) return;
+            lastMove = now;
+    
+            setPoints((prev) => [...prev, [e.lngLat.lng, e.lngLat.lat]]);
+        };
+    
+        const handleMouseUp = (e: mapboxgl.MapMouseEvent) => {
+            if (mode !== "draw") return;
+            e.preventDefault();
+            isDrawingRef.current = false;
+        };
+    
+        const handleMouseLeave = () => {
+            if (mode !== "draw") return;
+            isDrawingRef.current = false;
+        };
+
+        // IMPROVED TOUCH event handlers for mobile
+        const handleTouchStart = (e: mapboxgl.MapTouchEvent) => {
+            if (mode !== "draw") return;
+            
+            // Prevent default touch behaviors
+            e.preventDefault();
+            if (e.originalEvent) {
+                e.originalEvent.preventDefault();
+                e.originalEvent.stopPropagation();
+            }
+            
+            isDrawingRef.current = true;
+
+            // Use the touch point directly from the event
+            const lngLat = e.lngLat;
+            setPoints([[lngLat.lng, lngLat.lat]]);
+        };
+
+        const handleTouchMove = (e: mapboxgl.MapTouchEvent) => {
+            if (mode !== "draw" || !isDrawingRef.current) return;
+
+            // Prevent default touch behaviors
+            e.preventDefault();
+            if (e.originalEvent) {
+                e.originalEvent.preventDefault();
+                e.originalEvent.stopPropagation();
+            }
+
+            const now = Date.now();
+            if (now - lastMove < 30) return; // Reduced throttle for smoother drawing
+            lastMove = now;
+
+            const lngLat = e.lngLat;
+            setPoints((prev) => [...prev, [lngLat.lng, lngLat.lat]]);
+        };
+
+        const handleTouchEnd = (e: mapboxgl.MapTouchEvent) => {
+            if (mode !== "draw") return;
+            
+            // Prevent default touch behaviors
+            e.preventDefault();
+            if (e.originalEvent) {
+                e.originalEvent.preventDefault();
+                e.originalEvent.stopPropagation();
+            }
+            
+            isDrawingRef.current = false;
+        };
+
+        // Touch event handlers for better mobile support
+        const handleTouchCancel = (e: mapboxgl.MapTouchEvent) => {
+            if (mode !== "draw") return;
+            isDrawingRef.current = false;
+        };
+
+        // Remove existing listeners to avoid duplication
+        mapInstance.off("click", handleClick);
+        mapInstance.off("mousedown", handleMouseDown);
+        mapInstance.off("mousemove", handleMouseMove);
+        mapInstance.off("mouseup", handleMouseUp);
+        mapInstance.off("mouseleave", handleMouseLeave);
+        mapInstance.off("touchstart", handleTouchStart);
+        mapInstance.off("touchmove", handleTouchMove);
+        mapInstance.off("touchend", handleTouchEnd);
+
+        // Attach listeners
+        mapInstance.on("click", handleClick);
+        mapInstance.on("mousedown", handleMouseDown);
+        mapInstance.on("mousemove", handleMouseMove);
+        mapInstance.on("mouseup", handleMouseUp);
+        mapInstance.on("mouseleave", handleMouseLeave);
+        mapInstance.on("touchstart", handleTouchStart);
+        mapInstance.on("touchmove", handleTouchMove);
+        mapInstance.on("touchend", handleTouchEnd);
+        mapInstance.on("touchcancel", handleTouchCancel);
+    };
 
     const getCoordinates = (): Promise<number[]> => {
         return new Promise<number[]>((resolve) => {
@@ -263,7 +331,14 @@ export default function Map() {
 
     return (
         <div className="w-full h-full relative">
-            <div ref={mapContainer} className="w-full h-full" />
+            {/* Add touch-action CSS to prevent default touch behaviors */}
+            <div 
+                ref={mapContainer} 
+                className="w-full h-full" 
+                style={{ 
+                    touchAction: mode === "draw" ? "none" : "auto"
+                }}
+            />
             {submitting && (
                 <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center">
                     <svg 
@@ -300,7 +375,7 @@ export default function Map() {
                     <button
                         onClick={() => setMode("click")}
                         className={`px-2 py-1 rounded-lg text-xs hover:cursor-pointer ${
-                            mode === "click" ? "bg-blue-600 text-white" : "text-white bg-white/2.5 backdrop-blur-sm shadow-[inset_0_1px_0px_rgba(255,255,255,0.75),0_0_9px_rgba(0,0,0,0.2),0_3px_8px_rgba(0,0,0,0.15)] before:absolute before:inset-0 before:rounded-lg before:bg-gradient-to-br before:from-white/60 before:via-transparent before:to-transparent before:opacity-70 before:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:bg-gradient-to-tl after:from-white/30 after:via-transparent after:to-transparent after:opacity-50 after:pointer-events-none transition antialiased"
+                            mode === "click" ? "bg-blue-600 text-white" : "text-white bg-white/2.5 backdrop-blur-sm shadow-[inset_0_1px_0px_rgba(255,255,255,0.75),0_0_9px_rgba(0,0,0,0.2),0_3px_8px_rgba(0,0,0,0.15)] before:absolute before:inset-0 before:rounded-lg before:bg-gradient-to-br before:from-white/60 before:via-transparent before:to-transparent before:opacity-70 before:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:bg-gradient-to-tl after:from-white/30 before:via-transparent before:to-transparent after:opacity-50 after:pointer-events-none transition antialiased"
                         }`}
                     >
                         Click Mode
@@ -308,7 +383,7 @@ export default function Map() {
                     <button
                         onClick={() => setMode("route")}
                         className={`px-2 py-1 rounded-lg text-xs hover:cursor-pointer ${
-                            mode === "route" ? "bg-blue-600 text-white" : "text-white bg-white/2.5 backdrop-blur-sm shadow-[inset_0_1px_0px_rgba(255,255,255,0.75),0_0_9px_rgba(0,0,0,0.2),0_3px_8px_rgba(0,0,0,0.15)] before:absolute before:inset-0 before:rounded-lg before:bg-gradient-to-br before:from-white/60 before:via-transparent before:to-transparent before:opacity-70 before:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:bg-gradient-to-tl after:from-white/30 after:via-transparent after:to-transparent after:opacity-50 after:pointer-events-none transition antialiased"
+                            mode === "route" ? "bg-blue-600 text-white" : "text-white bg-white/2.5 backdrop-blur-sm shadow-[inset_0_1px_0px_rgba(255,255,255,0.75),0_0_9px_rgba(0,0,0,0.2),0_3px_8px_rgba(0,0,0,0.15)] before:absolute before:inset-0 before:rounded-lg before:bg-gradient-to-br before:from-white/60 before:via-transparent before:to-transparent before:opacity-70 before:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:bg-gradient-to-tl after:from-white/30 before:via-transparent before:to-transparent after:opacity-50 after:pointer-events-none transition antialiased"
                         }`}
                     >
                         Route Mode
@@ -316,7 +391,7 @@ export default function Map() {
                     <button
                         onClick={() => setMode("draw")}
                         className={`px-2 py-1 rounded-lg text-xs hover:cursor-pointer ${
-                            mode === "draw" ? "bg-blue-600 text-white" : "text-white bg-white/2.5 backdrop-blur-sm shadow-[inset_0_1px_0px_rgba(255,255,255,0.75),0_0_9px_rgba(0,0,0,0.2),0_3px_8px_rgba(0,0,0,0.15)] before:absolute before:inset-0 before:rounded-lg before:bg-gradient-to-br before:from-white/60 before:via-transparent before:to-transparent before:opacity-70 before:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:bg-gradient-to-tl after:from-white/30 after:via-transparent after:to-transparent after:opacity-50 after:pointer-events-none transition antialiased"
+                            mode === "draw" ? "bg-blue-600 text-white" : "text-white bg-white/2.5 backdrop-blur-sm shadow-[inset_0_1px_0px_rgba(255,255,255,0.75),0_0_9px_rgba(0,0,0,0.2),0_3px_8px_rgba(0,0,0,0.15)] before:absolute before:inset-0 before:rounded-lg before:bg-gradient-to-br before:from-white/60 before:via-transparent before:to-transparent before:opacity-70 before:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:bg-gradient-to-tl after:from-white/30 before:via-transparent before:to-transparent after:opacity-50 after:pointer-events-none transition antialiased"
                         }`}
                     >
                         Draw Mode
@@ -351,12 +426,12 @@ export default function Map() {
                 <div className="flex justify-center gap-2">
                     <button
                         onClick={clearPoints}
-                        className="hover:cursor-pointer text-white rounded-lg px-2 py-1 bg-white/2.5 backdrop-blur-sm shadow-[inset_0_1px_0px_rgba(255,255,255,0.75),0_0_9px_rgba(0,0,0,0.2),0_3px_8px_rgba(0,0,0,0.15)] before:absolute before:inset-0 before:rounded-lg before:bg-gradient-to-br before:from-white/60 before:via-transparent before:to-transparent before:opacity-70 before:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:bg-gradient-to-tl after:from-white/30 after:via-transparent after:to-transparent after:opacity-50 after:pointer-events-none transition antialiased"
+                        className="hover:cursor-pointer text-white rounded-lg px-2 py-1 bg-white/2.5 backdrop-blur-sm shadow-[inset_0_1px_0px_rgba(255,255,255,0.75),0_0_9px_rgba(0,0,0,0.2),0_3px_8px_rgba(0,0,0,0.15)] before:absolute before:inset-0 before:rounded-lg before:bg-gradient-to-br before:from-white/60 before:via-transparent before:to-transparent before:opacity-70 before:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:bg-gradient-to-tl after:from-white/30 before:via-transparent before:to-transparent after:opacity-50 after:pointer-events-none transition antialiased"
                     >
                         Clear Route
                     </button>
                     <button
-                        className="hover:cursor-pointer text-white rounded-lg px-2 py-1 bg-white/2.5 backdrop-blur-sm shadow-[inset_0_1px_0px_rgba(255,255,255,0.75),0_0_9px_rgba(0,0,0,0.2),0_3px_8px_rgba(0,0,0,0.15)] before:absolute before:inset-0 before:rounded-lg before:bg-gradient-to-br before:from-white/60 before:via-transparent before:to-transparent before:opacity-70 before:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:bg-gradient-to-tl after:from-white/30 after:via-transparent after:to-transparent after:opacity-50 after:pointer-events-none transition antialiased"
+                        className="hover:cursor-pointer text-white rounded-lg px-2 py-1 bg-white/2.5 backdrop-blur-sm shadow-[inset_0_1px_0px_rgba(255,255,255,0.75),0_0_9px_rgba(0,0,0,0.2),0_3px_8px_rgba(0,0,0,0.15)] before:absolute before:inset-0 before:rounded-lg before:bg-gradient-to-br before:from-white/60 before:via-transparent before:to-transparent before:opacity-70 before:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:bg-gradient-to-tl after:from-white/30 before:via-transparent before:to-transparent after:opacity-50 after:pointer-events-none transition antialiased"
                         onClick={submitRoute}
                     >
                         Submit Route
