@@ -24,6 +24,7 @@ export default function Map() {
     const [showSuccess, setShowSuccess] = useState(false);
 
     const [mode, setMode] = useState<"click" | "route" | "draw">("click");
+    const modeRef = useRef<"click" | "route" | "draw">("click");
 
     const isDrawingRef = useRef(false);
 
@@ -42,9 +43,6 @@ export default function Map() {
                 style: "mapbox://styles/mapbox/dark-v11",
                 center: coords as [number, number],
                 zoom: 13,
-                // Disable map interactions that interfere with drawing on mobile
-                touchZoomRotate: mode !== "draw",
-                doubleClickZoom: mode !== "draw",
             });
     
             map.current = mapInstance;
@@ -53,23 +51,24 @@ export default function Map() {
         };
     
         fetchCoordinates();
-    }, [mode]);
+    }, []);
 
     useEffect(() => {
         if (!map.current) return;
-        setupMapListeners(map.current);
+
+        const mapInstance = map.current;
+        modeRef.current = mode;
         
-        // Update map interaction settings when mode changes
         if (mode === "draw") {
-            map.current.touchZoomRotate.disable();
-            map.current.doubleClickZoom.disable();
-            map.current.dragPan.disable();
-            map.current.dragRotate.disable();
+            mapInstance.touchZoomRotate.disable();
+            mapInstance.doubleClickZoom.disable();
+            mapInstance.dragPan.disable();
+            mapInstance.dragRotate.disable();
         } else {
-            map.current.touchZoomRotate.enable();
-            map.current.doubleClickZoom.enable();
-            map.current.dragPan.enable();
-            map.current.dragRotate.enable();
+            mapInstance.touchZoomRotate.enable();
+            mapInstance.doubleClickZoom.enable();
+            mapInstance.dragPan.enable();
+            mapInstance.dragRotate.enable();
         }
     }, [mode]);
 
@@ -128,12 +127,13 @@ export default function Map() {
 
     const setupMapListeners = (mapInstance: mapboxgl.Map) => {
         if (!mapInstance) return;
-    
+        
+        // Click handler for click and route mode
         const handleClick = async (e: mapboxgl.MapMouseEvent) => {
-            if (mode === "draw") return;
+            if (modeRef.current === "draw") return;
     
             const start: [number, number] = [e.lngLat.lng, e.lngLat.lat];
-            if (mode === "route") {
+            if (modeRef.current === "route") {
                 try {
                     const route = await fetchLoopRoute(start, targetDistance);
                     if (route) {
@@ -147,9 +147,10 @@ export default function Map() {
                 setPoints((prev) => [...prev, start]);
             }
         };
-    
+        
+        // Draw handler for draw mode
         const handleMouseDown = (e: mapboxgl.MapMouseEvent) => {
-            if (mode !== "draw") return;
+            if (modeRef.current !== "draw") return;
             e.preventDefault();
             isDrawingRef.current = true;
             setPoints([[e.lngLat.lng, e.lngLat.lat]]);
@@ -157,7 +158,7 @@ export default function Map() {
     
         let lastMove = 0;
         const handleMouseMove = (e: mapboxgl.MapMouseEvent) => {
-            if (mode !== "draw" || !isDrawingRef.current) return;
+            if (modeRef.current !== "draw" || !isDrawingRef.current) return;
     
             const now = Date.now();
             if (now - lastMove < 50) return;
@@ -165,24 +166,24 @@ export default function Map() {
     
             setPoints((prev) => [...prev, [e.lngLat.lng, e.lngLat.lat]]);
         };
-    
+        
+        // Draw release handler
         const handleMouseUp = (e: mapboxgl.MapMouseEvent) => {
-            if (mode !== "draw") return;
+            if (modeRef.current !== "draw") return;
             e.preventDefault();
             isDrawingRef.current = false;
         };
-    
+        
+        // Mouse leave screen
         const handleMouseLeave = () => {
-            if (mode !== "draw") return;
+            if (modeRef.current !== "draw") return;
             isDrawingRef.current = false;
         };
 
-        // IMPROVED TOUCH event handlers for mobile
+        // Mobile drawing handler for starting draw mode
         const handleTouchStart = (e: mapboxgl.MapTouchEvent) => {
-            if (mode !== "draw") return;
+            if (modeRef.current !== "draw") return;
             
-            // Prevent default touch behaviors
-            e.preventDefault();
             if (e.originalEvent) {
                 e.originalEvent.preventDefault();
                 e.originalEvent.stopPropagation();
@@ -190,33 +191,31 @@ export default function Map() {
             
             isDrawingRef.current = true;
 
-            // Use the touch point directly from the event
             const lngLat = e.lngLat;
             setPoints([[lngLat.lng, lngLat.lat]]);
         };
 
+        // Mobile drawing handler for draw mode
         const handleTouchMove = (e: mapboxgl.MapTouchEvent) => {
-            if (mode !== "draw" || !isDrawingRef.current) return;
+            if (modeRef.current !== "draw" || !isDrawingRef.current) return;
 
-            // Prevent default touch behaviors
-            e.preventDefault();
             if (e.originalEvent) {
                 e.originalEvent.preventDefault();
                 e.originalEvent.stopPropagation();
             }
 
             const now = Date.now();
-            if (now - lastMove < 30) return; // Reduced throttle for smoother drawing
+            if (now - lastMove < 30) return;
             lastMove = now;
 
             const lngLat = e.lngLat;
             setPoints((prev) => [...prev, [lngLat.lng, lngLat.lat]]);
         };
 
+        // Ending draw mode on mobile
         const handleTouchEnd = (e: mapboxgl.MapTouchEvent) => {
-            if (mode !== "draw") return;
+            if (modeRef.current !== "draw") return;
             
-            // Prevent default touch behaviors
             e.preventDefault();
             if (e.originalEvent) {
                 e.originalEvent.preventDefault();
@@ -226,9 +225,9 @@ export default function Map() {
             isDrawingRef.current = false;
         };
 
-        // Touch event handlers for better mobile support
+        // Ending drwa mode on mobile
         const handleTouchCancel = (e: mapboxgl.MapTouchEvent) => {
-            if (mode !== "draw") return;
+            if (modeRef.current !== "draw") return;
             isDrawingRef.current = false;
         };
 
