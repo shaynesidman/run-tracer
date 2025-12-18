@@ -1,18 +1,21 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
-import { supabase } from "@/lib/supabase";
+import { db } from "@/db/db";
+import { activitiesTable } from "@/db/schema";
+import { eq } from "drizzle-orm";
 
 export async function GET() {
-    const { userId } = await auth();
-
-    if (!userId) return NextResponse.json({ error: "User is not logged in" }, { status: 401 });
-
-    const { data, error } = await supabase
-        .from("activities")
-        .select("distance")
-        .eq("userId", userId);
-
-    if (error) return NextResponse.json({ error: "Postgres error"}, { status: 500 });
-
-    return NextResponse.json({ data: data.reduce((acc, row) => acc + row.distance, 0) }, { status: 200 });
+    try {
+        const { userId } = await auth();
+    
+        if (!userId) return NextResponse.json({ error: "User is not logged in" }, { status: 401 });
+    
+        const data = await db.select()
+            .from(activitiesTable)
+            .where(eq(activitiesTable.userId, userId));
+    
+        return NextResponse.json({ data: data.reduce((acc, row) => acc + row.distance, 0) }, { status: 200 });
+    } catch (error) {
+        return NextResponse.json({ error: "Failed to fetch total distance" }, { status: 500 });
+    }
 }
