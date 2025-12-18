@@ -8,11 +8,8 @@ import {
     SignedOut,
     UserButton,
 } from "@clerk/nextjs";
-import { useAuth } from "@clerk/nextjs";
 
 export default function NavBar() {
-    const { isSignedIn } = useAuth();
-
     return (
         <nav className="sticky z-10 w-full py-2 bg-[var(--bg-secondary)] flex justify-center items-center">
             <div className="max-w-5xl w-full flex justify-center items-center px-4">
