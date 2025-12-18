@@ -12,7 +12,7 @@ export async function GET() {
     
         const data = await db.select().from(activitiesTable).where(eq(activitiesTable.userId, userId));    
     
-        return NextResponse.json({ data: data }, { status: 200 });
+        return NextResponse.json({ data }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ error: "Failed to fetch activities" }, { status: 500 });
     }
