@@ -49,8 +49,8 @@ export default function AccountInfo() {
 
     return (
         <div className="w-full bg-[var(--bg-secondary)] p-4 flex flex-col justify-center gap-4 rounded-lg">
-            <div className="flex flex-row justify-between items-center gap-2">
-                <div>
+            <div className="w-full flex flex-row justify-between items-center gap-2">
+                <div className="w-full">
                     {(user.firstName || user.lastName) && (
                         <p>
                             <span className="font-bold">Name: </span>

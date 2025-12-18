@@ -5,7 +5,7 @@ import RecentRuns from "@/components/RecentRuns";
 
 export default function Home() {
     return (
-        <section className="flex justify-center px-4 sm:px-6 lg:px-8">
+        <section className="flex justify-center px-4">
             <div className="h-full w-full max-w-5xl mx-auto py-4 flex flex-col justify-center items-center gap-4 sm:gap-6 lg:gap-8">
                 <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-center">Welcome to RunTracer</h1>
                 <p className="text-xl sm:text-2xl md:text-3xl text-center">Plan and track your runs, walks, bikes, and more with ease.</p>

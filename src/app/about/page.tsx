@@ -1,7 +1,7 @@
 
 export default function About() {
     return (
-        <section className="max-w-4xl mx-auto p-4 flex flex-col gap-4">
+        <section className="max-w-5xl mx-auto p-4 flex flex-col gap-4">
             <h3 className="font-bold text-xl">RunTracer</h3>
             <p>RunTracer is an application intended for users to track any form of activity and travel, including, but not limited to, running, walking, biking, and driving.</p>
             <p>Users can save their route history by signing in or signing up using the appropriate buttons on the navigation bar.</p>
