@@ -30,7 +30,7 @@ export default function Map() {
 
     const { user } = useUser();
 
-    // useEffects
+    // Effect hooks
 
     useEffect(() => {
         const fetchCoordinates = async () => {
