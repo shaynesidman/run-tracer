@@ -8,12 +8,15 @@ import {
     SignedOut,
     UserButton,
 } from "@clerk/nextjs";
+import { useAuth } from "@clerk/nextjs";
 
 export default function NavBar() {
+    const { isSignedIn } = useAuth();
+
     return (
-        <nav className="sticky top-2 z-10 w-full rounded-lg py-2 bg-[var(--bg-secondary)] flex justify-center items-center">
-            <div className="max-w-5xl w-full flex justify-between items-center px-2">
-                <Link href="/"><h1 className="text-2xl hover:cursor-pointer">RunTracer</h1></Link>
+        <nav className="sticky top-2 z-10 w-full py-2 bg-[var(--bg-secondary)] flex justify-center items-center">
+            <div className={`max-w-5xl w-full flex ${isSignedIn ? "justify-between" : "justify-center"} items-center px-2`}>
+                {isSignedIn &&<Link href="/"><h1 className="text-2xl hover:cursor-pointer">RunTracer</h1></Link>}
                 <div className="flex flex-row justify-center items-center gap-3 sm:gap-4 md:gap-6">
                     <Link href="/map"><h3 className="hover:cursor-pointer">Map</h3></Link>
                     <Link href="/about"><h3 className="hover:cursor-pointer">About</h3></Link>

@@ -23,8 +23,8 @@ const images = [
 
 export default function PhotoGallery() {
     return (
-        <div className="w-full overflow-hidden py-8">
-            <div className="flex gap-6 animate-scroll hover:pause-animation">
+        <div className="w-full overflow-hidden py-4 sm:py-6 lg:py-8">
+            <div className="flex gap-3 sm:gap-4 lg:gap-6 animate-scroll hover:pause-animation">
                 {/* First set of images */}
                 {images.map((image, index) => (
                     <div key={`img-1-${index}`} className="flex-shrink-0 rounded-lg overflow-hidden shadow-md">
@@ -33,7 +33,7 @@ export default function PhotoGallery() {
                             alt={`Gallery photo ${index + 1}`}
                             width={300}
                             height={300}
-                            className="object-cover w-[300px] h-[300px] rounded-lg"
+                            className="object-cover w-[200px] h-[200px] sm:w-[250px] sm:h-[250px] lg:w-[300px] lg:h-[300px] rounded-lg"
                         />
                     </div>
                 ))}
@@ -45,7 +45,7 @@ export default function PhotoGallery() {
                             alt={`Gallery photo ${index + 1}`}
                             width={300}
                             height={300}
-                            className="object-cover w-[300px] h-[300px] rounded-lg"
+                            className="object-cover w-[200px] h-[200px] sm:w-[250px] sm:h-[250px] lg:w-[300px] lg:h-[300px] rounded-lg"
                         />
                     </div>
                 ))}

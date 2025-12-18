@@ -2,6 +2,7 @@ import { useAuth } from "@clerk/nextjs";
 import { useState, useEffect } from "react";
 import { type Activity } from "@/types/activity";
 import LoadingSpinner from "./ui/LoadingSpinner";
+import MiniMap from "./MiniMap";
 
 export default function RecentRuns() {
     const [recentRuns, setRecentRuns] = useState<Activity[] | null>(null);  // Initially null to prevent flashing due to empty array
@@ -46,7 +47,7 @@ export default function RecentRuns() {
     // User is not logged in
     if (!userId) {
         return (
-            <div className="w-full bg-[var(--bg-secondary)] text-xl text-center px-6 py-4 rounded-lg">
+            <div className="w-full bg-[var(--bg-secondary)] text-base sm:text-lg md:text-xl text-center px-4 sm:px-6 py-3 sm:py-4 rounded-lg">
                 Sign in to see recent activity.
             </div>
         );
@@ -59,23 +60,24 @@ export default function RecentRuns() {
     // User has tracked at least one run; show most recent 3 runs
     if (recentRuns.length > 0) {
         return (
-            <div className="flex sm:flex-row flex-col gap-6">
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 w-full sm:w-auto">
                 {recentRuns.slice(-3).reverse().map((run: Activity) => (
-                    <div key={run.id} className="bg-[var(--bg-secondary)] text-xl px-6 py-4 rounded-lg">
+                    <div key={run.id} className="bg-[var(--bg-secondary)] text-base sm:text-lg md:text-xl px-4 sm:px-6 py-3 sm:py-4 rounded-lg flex-1 flex justify-between items-center gap-4">
                         <div className="flex flex-col">
                             <p>{run.type}</p>
                             <p>{formatDate(run.time)}</p>
                             <p>{run.distance.toFixed(2)} mi</p>
                         </div>
+                        <MiniMap activity={run} />
                     </div>
                 ))}
             </div>
-        );  
+        );
     }
 
     // User has not tracked any runs
     return (
-        <div className="bg-[var(--bg-secondary)] text-xl w-full px-6 py-4 rounded-lg">
+        <div className="bg-[var(--bg-secondary)] text-base sm:text-lg md:text-xl w-full px-4 sm:px-6 py-3 sm:py-4 rounded-lg">
             <p className="w-full text-center">You have no recent runs.</p>
         </div>
     ); 
