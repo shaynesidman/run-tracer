@@ -10,7 +10,6 @@ import {
 } from "@clerk/nextjs";
 
 export default function NavBar() {
-
     return (
         <nav className="sticky top-2 z-10 w-full rounded-lg p-2">
             <div className="w-full flex justify-between items-center px-2">
