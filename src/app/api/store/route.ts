@@ -1,21 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
-import { supabase } from "@/lib/supabase";
+import { db } from "@/db/db";
+import { activitiesTable } from "@/db/schema";
 
 export async function POST(req: NextRequest) {
-    const { userId } = await auth();
+    try {
+        const { userId } = await auth();
 
-    if (!userId) {
-        return NextResponse.json({ error: "Unauthorized: User not logged in" }, { status: 401 });
+        if (!userId) {
+            return NextResponse.json({ error: "Unauthorized: User not logged in" }, { status: 401 });
+        }
+
+        const { points, totalDistance, start, activityType } = await req.json();
+
+        await db
+            .insert(activitiesTable)
+            .values({
+                type: activityType,
+                points: points,
+                distance: totalDistance,
+                start: start,
+                userId: userId,
+            });
+        return NextResponse.json({ status: 200 });
+    } catch (error) {
+        console.error("Error storing activity:", error);
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
-
-    const { points, totalDistance, start, activityType } = await req.json();
-
-    const { error } = await supabase
-        .from("activities")
-        .insert({ type: activityType, points: points, distance: totalDistance, start: start, userId: userId });
-        
-    if (error) return NextResponse.json({ error: "Postgres error"}, { status: 500 });
-
-    return NextResponse.json({ status: 200 });
 }
