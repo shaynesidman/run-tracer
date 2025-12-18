@@ -9,8 +9,9 @@ import { point } from "@turf/helpers";
 import destination from "@turf/destination";
 import { point as turfPoint } from "@turf/helpers";
 import { useUser } from "@clerk/nextjs";
+import LoadingSpinner from "./ui/LoadingSpinner";
 
-mapboxgl.accessToken = process.env.NEXT_PUBLIC_REACT_APP_MAPBOX_TOKEN!;
+mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN!;
 
 export default function Map() {
     const mapContainer = useRef<HTMLDivElement | null>(null);
@@ -339,59 +340,40 @@ export default function Map() {
             />
             {submitting && (
                 <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center">
-                    <svg 
-                        className="animate-spin h-8 w-8 text-white/70" 
-                        xmlns="http://www.w3.org/2000/svg" 
-                        fill="none" 
-                        viewBox="0 0 24 24"
-                    >
-                        <circle 
-                            className="opacity-25" 
-                            cx="12" 
-                            cy="12" 
-                            r="10" 
-                            stroke="currentColor" 
-                            strokeWidth="4"
-                        />
-                        <path 
-                            className="opacity-75" 
-                            fill="currentColor" 
-                            d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        />
-                    </svg>
+                    <LoadingSpinner />
                 </div>
             )}
 
             {showSuccess && (
-                <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 bg-green-600 text-white font-semibold px-4 py-2 rounded shadow-lg">
+                <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 bg-[var(--bg-secondary)]">
                     Route submitted!
                 </div>
             )}
 
             {/* Legend */}
-            <div className="absolute bottom-9 left-2 flex flex-col gap-1 text-sm font-semibold space-y-2 px-6 py-4 rounded-lg bg-white/2.5 border border-white/50 backdrop-blur-sm shadow-[inset_0_1px_0px_rgba(255,255,255,0.75),0_0_9px_rgba(0,0,0,0.2),0_3px_8px_rgba(0,0,0,0.15)] before:absolute before:inset-0 before:rounded-lg before:bg-gradient-to-br before:from-white/60 before:via-transparent before:to-transparent before:opacity-70 before:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:bg-gradient-to-tl after:from-white/30 after:via-transparent after:to-transparent after:opacity-50 after:pointer-events-none transition antialiased">
+            <div className="absolute bottom-9 left-2 flex flex-col gap-1 text-sm space-y-2 px-6 py-4 rounded-lg bg-[var(--bg-secondary)]">
                 {/* Mode Selection */}
-                <div className="flex gap-1">
+                <div className="flex gap-1 text-xs">
                     <button
                         onClick={() => setMode("click")}
-                        className={`px-2 py-1 rounded-lg text-xs hover:cursor-pointer ${
-                            mode === "click" ? "bg-blue-600 text-white" : "text-white bg-white/2.5 backdrop-blur-sm shadow-[inset_0_1px_0px_rgba(255,255,255,0.75),0_0_9px_rgba(0,0,0,0.2),0_3px_8px_rgba(0,0,0,0.15)] before:absolute before:inset-0 before:rounded-lg before:bg-gradient-to-br before:from-white/60 before:via-transparent before:to-transparent before:opacity-70 before:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:bg-gradient-to-tl after:from-white/30 before:via-transparent before:to-transparent after:opacity-50 after:pointer-events-none transition antialiased"
+                        className={`px-2 py-1 rounded-lg hover:cursor-pointer ${
+                            mode === "click" ? "bg-[var(--bg-primary)] text-[var(--text-primary)]" : "bg-[var(--bg-tertiary)] text-[var(--text-secondary)]"
                         }`}
                     >
                         Click Mode
                     </button>
                     <button
                         onClick={() => setMode("route")}
-                        className={`px-2 py-1 rounded-lg text-xs hover:cursor-pointer ${
-                            mode === "route" ? "bg-blue-600 text-white" : "text-white bg-white/2.5 backdrop-blur-sm shadow-[inset_0_1px_0px_rgba(255,255,255,0.75),0_0_9px_rgba(0,0,0,0.2),0_3px_8px_rgba(0,0,0,0.15)] before:absolute before:inset-0 before:rounded-lg before:bg-gradient-to-br before:from-white/60 before:via-transparent before:to-transparent before:opacity-70 before:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:bg-gradient-to-tl after:from-white/30 before:via-transparent before:to-transparent after:opacity-50 after:pointer-events-none transition antialiased"
+                        className={`px-2 py-1 rounded-lg hover:cursor-pointer ${
+                            mode === "route" ? "bg-[var(--bg-primary)] text-[var(--text-primary)]" : "bg-[var(--bg-tertiary)] text-[var(--text-secondary)]"
                         }`}
                     >
                         Route Mode
                     </button>
                     <button
                         onClick={() => setMode("draw")}
-                        className={`px-2 py-1 rounded-lg text-xs hover:cursor-pointer ${
-                            mode === "draw" ? "bg-blue-600 text-white" : "text-white bg-white/2.5 backdrop-blur-sm shadow-[inset_0_1px_0px_rgba(255,255,255,0.75),0_0_9px_rgba(0,0,0,0.2),0_3px_8px_rgba(0,0,0,0.15)] before:absolute before:inset-0 before:rounded-lg before:bg-gradient-to-br before:from-white/60 before:via-transparent before:to-transparent before:opacity-70 before:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:bg-gradient-to-tl after:from-white/30 before:via-transparent before:to-transparent after:opacity-50 after:pointer-events-none transition antialiased"
+                        className={`px-2 py-1 rounded-lg hover:cursor-pointer ${
+                            mode === "draw" ? "bg-[var(--bg-primary)] text-[var(--text-primary)]" : "bg-[var(--bg-tertiary)] text-[var(--text-secondary)]"
                         }`}
                     >
                         Draw Mode
@@ -400,38 +382,38 @@ export default function Map() {
 
                 {/* Route mode extra controls */}
                 {mode === "route" && (
-                    <div className="text-white">
+                    <div>
                         <label className="mr-2">Target Distance:</label>
                         <input
                             type="number"
                             value={targetDistance}
                             onChange={(e) => setTargetDistance(Number(e.target.value))}
-                            className="w-20 border rounded px-1 py-0.5"
+                            className="w-20 border rounded px-1 py-0.5 bg-[var(--bg-tertiary)] text-[var(--text-secondary)]"
                         />
                         <span className="ml-1">mi</span>
                     </div>
                 )}
 
-                <div className="text-white">Total Distance: {totalDistance.toFixed(2)} mi</div>
-                <div className="text-white flex gap-4 items-center">
-                    <span>Activity Type:</span> 
-                    <input 
-                        className="w-37 px-2 border rounded text-white"
+                <div>Total Distance: {totalDistance.toFixed(2)} mi</div>
+                <div className="flex gap-4 items-center">
+                    <span>Activity Type:</span>
+                    <input
+                        className="w-37 px-2 rounded"
                         placeholder="Run"
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                             setActivityType(e.target.value);
                         }}
                     />
                 </div>
-                <div className="flex justify-center gap-2">
+                <div className="flex justify-center gap-2 text-xs">
                     <button
                         onClick={clearPoints}
-                        className="hover:cursor-pointer text-white rounded-lg px-2 py-1 bg-white/2.5 backdrop-blur-sm shadow-[inset_0_1px_0px_rgba(255,255,255,0.75),0_0_9px_rgba(0,0,0,0.2),0_3px_8px_rgba(0,0,0,0.15)] before:absolute before:inset-0 before:rounded-lg before:bg-gradient-to-br before:from-white/60 before:via-transparent before:to-transparent before:opacity-70 before:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:bg-gradient-to-tl after:from-white/30 before:via-transparent before:to-transparent after:opacity-50 after:pointer-events-none transition antialiased"
+                        className="hover:cursor-pointer rounded-lg px-2 py-1 bg-[var(--bg-tertiary)] text-[var(--text-secondary)]"
                     >
                         Clear Route
                     </button>
                     <button
-                        className="hover:cursor-pointer text-white rounded-lg px-2 py-1 bg-white/2.5 backdrop-blur-sm shadow-[inset_0_1px_0px_rgba(255,255,255,0.75),0_0_9px_rgba(0,0,0,0.2),0_3px_8px_rgba(0,0,0,0.15)] before:absolute before:inset-0 before:rounded-lg before:bg-gradient-to-br before:from-white/60 before:via-transparent before:to-transparent before:opacity-70 before:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:bg-gradient-to-tl after:from-white/30 before:via-transparent before:to-transparent after:opacity-50 after:pointer-events-none transition antialiased"
+                        className="hover:cursor-pointer rounded-lg px-2 py-1 bg-[var(--bg-tertiary)] text-[var(--text-secondary)]"
                         onClick={submitRoute}
                     >
                         Submit Route

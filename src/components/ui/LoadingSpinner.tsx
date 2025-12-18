@@ -1,6 +1,6 @@
 export default function LoadingSpinner() {
     return (
-        <div className="px-6 py-4 rounded-lg bg-white/10 backdrop-blur-sm border border-white/30 flex items-center justify-center">
+        <div className="px-6 py-4 rounded-lg bg-[var(--bg-secondary)]">
             <svg 
                 className="animate-spin h-8 w-8 text-white/70" 
                 xmlns="http://www.w3.org/2000/svg" 

@@ -18,7 +18,7 @@ export default function Home() {
                 >
                     Go to map
                 </Link> */}
-                {/* <RecentRuns /> */}
+                <RecentRuns />
             </div>
         </section>
     );

@@ -4,7 +4,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import type { Feature, LineString } from "geojson";
 import { type Activity } from "@/types/activity";
 
-mapboxgl.accessToken = process.env.NEXT_PUBLIC_REACT_APP_MAPBOX_TOKEN!;
+mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN!;
 
 export default function MiniMap({ activity }: { activity: Activity }) {
     const mapContainer = useRef<HTMLDivElement | null>(null);
@@ -35,13 +35,7 @@ export default function MiniMap({ activity }: { activity: Activity }) {
 
         const mapInstance = map.current;
 
-        if (!mapInstance.isStyleLoaded()) {
-            mapInstance.on('load', () => addRouteToMap());
-        } else {
-            addRouteToMap();
-        }
-
-        function addRouteToMap() {
+        const addRouteToMap = () => {
             if (!mapInstance || !activity.points) return;
 
             // Remove existing route if present
@@ -81,7 +75,7 @@ export default function MiniMap({ activity }: { activity: Activity }) {
                     "line-cap": "round",
                 },
                 paint: {
-                    "line-color": "#1E90FF", // Same color as your main map
+                    "line-color": "#1E90FF",
                     "line-width": 3,
                 },
             });
@@ -91,9 +85,16 @@ export default function MiniMap({ activity }: { activity: Activity }) {
             if (bounds) {
                 mapInstance.fitBounds(bounds, {
                     padding: 20,
-                    duration: 0 // No animation for mini maps
+                    duration: 0 // No animation for mini map
                 });
             }
+        }
+
+        // Add route
+        if (!mapInstance.isStyleLoaded()) {
+            mapInstance.on('load', () => addRouteToMap());
+        } else {
+            addRouteToMap();
         }
     }, [activity.points]);
 
@@ -124,7 +125,7 @@ export default function MiniMap({ activity }: { activity: Activity }) {
     }
 
     return (
-        <div className="w-full h-32 rounded overflow-hidden">
+        <div className="w-full aspect-square rounded overflow-hidden">
             <div ref={mapContainer} className="w-full h-full" />
         </div>
     );

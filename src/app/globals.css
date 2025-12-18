@@ -5,6 +5,7 @@
     --bg-secondary: #FCF9F6;
     --bg-tertiary: #111111;
     --text-primary: #000000;
+    --text-secondary: #FFFFFF;
     --accent-primary: #3E7949;
 }
 
@@ -14,6 +15,7 @@
         --bg-secondary: #2A2A2A;
         --bg-tertiary: #FFFFFF;
         --text-primary: #FFFFFF;
+        --text-secondary: #000000;
         --accent-primary: #3E7949;
     }
 }
