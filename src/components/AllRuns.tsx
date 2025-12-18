@@ -63,7 +63,7 @@ export default function AllRuns() {
         return (
             <div className="flex flex-wrap">
                 {allRuns.map((run: Activity) => (
-                    <div key={run.id} className="w-full bg-[var(--bg-secondary)] rounded-lg px-4 py-2 mb-4">
+                    <div key={run.id} className="w-full bg-[var(--bg-secondary)] flex justify-center items-center gap-4 rounded-lg px-4 py-2 mb-4">
                         <div className="flex justify-center items-center gap-4">
                             <div className="flex flex-col">
                                 <p>{run.type}</p>

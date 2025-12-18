@@ -60,9 +60,9 @@ export default function RecentRuns() {
     // User has tracked at least one run; show most recent 3 runs
     if (recentRuns.length > 0) {
         return (
-            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 w-full sm:w-auto">
+            <div className="flex flex-wrap">
                 {recentRuns.slice(-3).reverse().map((run: Activity) => (
-                    <div key={run.id} className="bg-[var(--bg-secondary)] text-base sm:text-lg md:text-xl px-4 sm:px-6 py-3 sm:py-4 rounded-lg flex-1 flex justify-between items-center gap-4">
+                    <div key={run.id} className="w-full bg-[var(--bg-secondary)] flex justify-center items-center gap-4 rounded-lg px-4 py-2 mb-4">
                         <div className="flex flex-col">
                             <p>{run.type}</p>
                             <p>{formatDate(run.time)}</p>
