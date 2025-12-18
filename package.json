@@ -10,11 +10,13 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^6.31.1",
-    "@supabase/supabase-js": "^2.55.0",
+    "@neondatabase/serverless": "^1.0.2",
     "@turf/destination": "^7.2.0",
     "@turf/distance": "^7.2.0",
     "@turf/helpers": "^7.2.0",
     "@types/mapbox-gl": "^3.4.1",
+    "dotenv": "^17.2.3",
+    "drizzle-orm": "^0.45.1",
     "mapbox-gl": "^3.12.0",
     "next": "^15.5.9",
     "react": "^19.0.0",
@@ -25,7 +27,9 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "drizzle-kit": "^0.31.8",
     "tailwindcss": "^4",
+    "tsx": "^4.21.0",
     "typescript": "^5"
   }
 }
