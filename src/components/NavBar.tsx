@@ -11,7 +11,7 @@ import {
 
 export default function NavBar() {
     return (
-        <nav className="sticky top-2 z-10 w-full rounded-lg p-2">
+        <nav className="sticky top-2 z-10 w-full rounded-lg p-2 bg-[var(--bg-secondary)]">
             <div className="w-full flex justify-between items-center px-2">
                 <Link href="/"><h1 className="text-2xl hover:cursor-pointer">RunTracer</h1></Link>
                 <div className="flex flex-row justify-center items-center gap-3 sm:gap-4 md:gap-6">
