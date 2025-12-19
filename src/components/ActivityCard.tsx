@@ -21,7 +21,7 @@ export default function ActivityCard({ activity }: { activity: Activity }) {
     };
 
     return (
-        <div key={activity.id} className="bg-[var(--bg-secondary)] flex justify-center items-center rounded-lg gap-12 px-4 py-2 mb-4">
+        <div key={activity.id} className="bg-[var(--bg-secondary)] flex justify-center items-center rounded-lg gap-4 px-4 py-2 mb-4">
             <div className="flex flex-col">
                 <p>{activity.type}</p>
                 <p>{formatDate(activity.time)}</p>
