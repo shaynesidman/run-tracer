@@ -60,7 +60,7 @@ export default function AllRuns() {
     // User has tracked at least one run
     if (allRuns.length > 0) {
         return (
-            <div className="flex gap-4 flex-wrap">
+            <div className="w-full grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {allRuns.map((run: Activity) => (
                     <div key={run.id} className="bg-[var(--bg-secondary)] flex justify-center items-center gap-4 rounded-lg px-4 py-2 mb-4">
                         <div className="flex flex-col">
