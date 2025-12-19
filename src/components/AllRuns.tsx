@@ -56,20 +56,19 @@ export default function AllRuns() {
     if (allRuns === null) {
         return <LoadingSpinner />;
     }
-    
 
     // User has tracked at least one run
     if (allRuns.length > 0) {
         return (
-            <div className="flex flex-wrap">
+            <div className="flex gap-4 flex-wrap">
                 {allRuns.map((run: Activity) => (
-                    <div key={run.id} className="w-full bg-[var(--bg-secondary)] flex justify-center items-center gap-4 rounded-lg px-4 py-2 mb-4">
-                        <div className="flex justify-center items-center gap-4">
-                            <div className="flex flex-col">
-                                <p>{run.type}</p>
-                                <p>{formatDate(run.time)}</p>
-                                <p>{run.distance.toFixed(2)} mi</p>
-                            </div>
+                    <div key={run.id} className="bg-[var(--bg-secondary)] flex justify-center items-center gap-4 rounded-lg px-4 py-2 mb-4">
+                        <div className="flex flex-col">
+                            <p>{run.type}</p>
+                            <p>{formatDate(run.time)}</p>
+                            <p>{run.distance.toFixed(2)} mi</p>
+                        </div>
+                        <div className="w-28 h-28">
                             <MiniMap activity={run} />
                         </div>
                     </div>
