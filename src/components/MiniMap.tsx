@@ -125,7 +125,7 @@ export default function MiniMap({ activity }: { activity: Activity }) {
     }
 
     return (
-        <div className="w-full aspect-square rounded-lg overflow-hidden">
+        <div className="w-full h-full aspect-square rounded-lg overflow-hidden">
             <div ref={mapContainer} className="w-full h-full" />
         </div>
     );

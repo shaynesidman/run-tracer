@@ -21,7 +21,7 @@ export default function RootLayout({
                         <div className="w-full bg-[var(--bg-primary)] text-[var(--text-primary)] flex flex-col items-center">
                             <div className="min-h-screen w-full flex flex-col items-center gap-4">
                                 <NavBar />
-                                <div className="w-full max-w-5xl flex-1 flex justify-center items-center">
+                                <div className="w-full max-w-5xl flex-1 flex justify-center">
                                     {children}
                                 </div>
                             </div>

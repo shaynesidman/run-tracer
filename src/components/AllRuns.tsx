@@ -52,7 +52,7 @@ export default function AllRuns() {
                             <p>{formatDate(run.time)}</p>
                             <p>{run.distance.toFixed(2)} mi</p>
                         </div>
-                        <div className="w-28 h-28">
+                        <div className="w-32 h-32">
                             <MiniMap activity={run} />
                         </div>
                     </div>
