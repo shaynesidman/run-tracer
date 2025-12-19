@@ -6,8 +6,14 @@ export default function ActivityCard({ activity }: { activity: Activity }) {
         const date = new Date(timestamp);
         return date.toLocaleDateString('en-US', {
             month: 'short',
-            day: 'numeric', 
-            year: 'numeric',
+            day: 'numeric',
+            year: 'numeric'
+        });
+    };
+
+    const formatTime = (timestamp: string) => {
+        const date = new Date(timestamp);
+        return date.toLocaleTimeString('en-US', {
             hour: 'numeric',
             minute: '2-digit',
             hour12: true
@@ -15,11 +21,12 @@ export default function ActivityCard({ activity }: { activity: Activity }) {
     };
 
     return (
-        <div key={activity.id} className="bg-[var(--bg-secondary)] flex justify-center items-center gap-4 rounded-lg px-4 py-2 mb-4">
+        <div key={activity.id} className="bg-[var(--bg-secondary)] flex justify-center items-center rounded-lg gap-12 px-4 py-2 mb-4">
             <div className="flex flex-col">
                 <p>{activity.type}</p>
                 <p>{formatDate(activity.time)}</p>
-                <p>{activity.distance.toFixed(2)} mi</p>
+                <p>{formatTime(activity.time)}</p>
+                <p>{activity.distance.toFixed(2)} miles</p>
             </div>
             <div className="w-32 h-32">
                 <MiniMap activity={activity} />
