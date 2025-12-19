@@ -1,19 +1,15 @@
 "use client";
 
-import { useAuth } from "@clerk/nextjs";
 import { useState, useEffect } from "react";
 import { type Activity } from "@/types/activity";
 import MiniMap from "./MiniMap";
-import LoadingSpinner from "./ui/LoadingSpinner";
 
 export default function AllRuns() {
     const [allRuns, setAllRuns] = useState<Activity[] | null>(null);  // Initially null to prevent flashing due to empty array
 
-    const { userId, isLoaded } = useAuth();
-
     useEffect(() => {
-        if (isLoaded && userId) fetchActivities();
-    }, [userId, isLoaded]);
+        fetchActivities();
+    }, []);
 
     const fetchActivities = async () => {
         try {
@@ -31,37 +27,25 @@ export default function AllRuns() {
 
     const formatDate = (timestamp: string) => {
         const date = new Date(timestamp);
-        const dateStr = date.toLocaleDateString('en-US', {
-            month: '2-digit',
-            day: '2-digit', 
-            year: 'numeric'
-        });
-        const timeStr = date.toLocaleTimeString('en-US', {
+        return date.toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric', 
+            year: 'numeric',
             hour: 'numeric',
             minute: '2-digit',
             hour12: true
         });
-        return `${dateStr} ${timeStr}`;
     };
 
-    if (!isLoaded) {
-        return <LoadingSpinner />;
-    }
-    
-    // User is not signed in
-    if (!userId) {
-        return <></>;
-    }
-
     if (allRuns === null) {
-        return <LoadingSpinner />;
+        return;
     }
 
     // User has tracked at least one run
     if (allRuns.length > 0) {
         return (
             <div className="w-full grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {allRuns.map((run: Activity) => (
+                {allRuns.slice(-3).reverse().map((run: Activity) => (
                     <div key={run.id} className="bg-[var(--bg-secondary)] flex justify-center items-center gap-4 rounded-lg px-4 py-2 mb-4">
                         <div className="flex flex-col">
                             <p>{run.type}</p>
@@ -74,7 +58,7 @@ export default function AllRuns() {
                     </div>
                 ))}
             </div>
-        );  
+        );
     }
 
     // User has not tracked any runs

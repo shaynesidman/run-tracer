@@ -118,7 +118,7 @@ export default function MiniMap({ activity }: { activity: Activity }) {
 
     if (!activity.points || activity.points.length === 0) {
         return (
-            <div className="w-full h-32 bg-gray-200 rounded flex items-center justify-center text-sm text-gray-500">
+            <div className="w-full h-full bg-[var(--bg-secondary)] rounded flex items-center justify-center text-sm">
                 No route data
             </div>
         );
