@@ -21,7 +21,7 @@ export default function NavBar() {
     }, [pathname]);
 
     return (
-        <nav className="sticky top-0 z-10 w-full py-2 bg-[var(--bg-secondary)] flex justify-center items-center">
+        <nav className="sticky top-0 z-10 w-full py-2 border border-[var(--bg-secondary)] flex justify-center items-center">
             <div className="max-w-5xl w-full flex justify-center items-center px-4">
                 <div className="flex flex-row justify-center items-center gap-3 sm:gap-4 md:gap-6">
                     <Link href="/"><h3 className={`hover:cursor-pointer ${selectedTab === "/" ? "font-bold" : ""}`}>Home</h3></Link>

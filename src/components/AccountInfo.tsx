@@ -41,7 +41,7 @@ export default function AccountInfo() {
     // User is not signed in
     if (!isSignedIn) {
         return (
-            <div className="w-full bg-[var(--bg-secondary)] text-center px-4 py-8 rounded-lg">
+            <div className="w-full border border-[var(--bg-secondary)] text-center p-4 rounded-lg">
                 Sign in to see account info and recent activity.
             </div>
         );

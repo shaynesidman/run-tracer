@@ -345,13 +345,13 @@ export default function Map() {
             )}
 
             {showSuccess && (
-                <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 bg-[var(--bg-secondary)]">
+                <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 border border-[var(--bg-secondary)]">
                     Route submitted!
                 </div>
             )}
 
             {/* Legend */}
-            <div className="absolute bottom-9 left-2 flex flex-col gap-1 text-sm space-y-2 px-6 py-4 rounded-md bg-[var(--bg-secondary)]">
+            <div className="absolute bottom-9 left-2 flex flex-col gap-1 text-sm space-y-2 px-6 py-4 rounded-md border border-[var(--bg-secondary)]">
                 {/* Mode Selection */}
                 <div className="flex gap-1 text-xs">
                     <button
@@ -388,7 +388,7 @@ export default function Map() {
                             type="number"
                             value={targetDistance}
                             onChange={(e) => setTargetDistance(Number(e.target.value))}
-                            className="w-16 px-1 bg-[var(--bg-secondary)] focus:outline-none focus:ring-0 border rounded border-[var(--bg-tertiary)]"
+                            className="w-16 px-1 border border-[var(--bg-secondary)] focus:outline-none focus:ring-0 border rounded border-[var(--bg-tertiary)]"
                         />
                         <span className="ml-1">mi</span>
                     </div>

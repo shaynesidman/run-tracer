@@ -17,7 +17,7 @@ export default function Account() {
 
     if (!isLoaded) {
         return (
-            <section className="h-full w-full bg-[var(--bg-secondary)] max-w-5xl rounded-lg p-4 mx-auto flex flex-col justify-center items-center">
+            <section className="h-full w-full border border-[var(--bg-secondary)] max-w-5xl rounded-lg p-4 mx-auto flex flex-col justify-center items-center">
                 <LoadingSpinner />
             </section>
         );
@@ -25,7 +25,7 @@ export default function Account() {
 
     if (isLoaded && !userId) {
         return (
-            <section className="h-full w-full bg-[var(--bg-secondary)] max-w-5xl rounded-lg p-4 mx-auto flex flex-col justify-center items-center">
+            <section className="h-full w-full border border-[var(--bg-secondary)] max-w-5xl rounded-lg p-4 mx-auto flex flex-col justify-center items-center">
                 <p className="text-xl">Sign in to view account info</p>
             </section>
         );

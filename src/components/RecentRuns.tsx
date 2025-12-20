@@ -35,7 +35,7 @@ export default function RecentRuns() {
     // User is not logged in
     if (!userId) {
         return (
-            <div className="w-full bg-[var(--bg-secondary)] text-base sm:text-lg md:text-xl text-center px-4 sm:px-6 py-3 sm:py-4 rounded-lg">
+            <div className="w-full border border-[var(--bg-secondary)] text-base sm:text-lg md:text-xl text-center px-4 sm:px-6 py-3 sm:py-4 rounded-lg">
                 Sign in to see recent activity.
             </div>
         );
@@ -52,7 +52,7 @@ export default function RecentRuns() {
 
     // User has not tracked any runs
     return (
-        <div className="bg-[var(--bg-secondary)] text-base sm:text-lg md:text-xl w-full px-4 sm:px-6 py-3 sm:py-4 rounded-lg">
+        <div className="border border-[var(--bg-secondary)] text-base sm:text-lg md:text-xl w-full px-4 sm:px-6 py-3 sm:py-4 rounded-lg">
             <p className="w-full text-center">You have no recent runs.</p>
         </div>
     ); 
