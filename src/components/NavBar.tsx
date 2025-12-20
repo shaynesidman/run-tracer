@@ -8,16 +8,26 @@ import {
     SignedOut,
     UserButton,
 } from "@clerk/nextjs";
+import { useState, useEffect, use } from "react";
+import { usePathname } from "next/navigation";
 
 export default function NavBar() {
+    const pathname = usePathname();
+
+    const [selectedTab, setSelectedTab] = useState<string>(pathname);
+
+    useEffect(() => {
+        setSelectedTab(pathname);
+    }, [pathname]);
+
     return (
         <nav className="sticky top-0 z-10 w-full py-2 bg-[var(--bg-secondary)] flex justify-center items-center">
             <div className="max-w-5xl w-full flex justify-center items-center px-4">
                 <div className="flex flex-row justify-center items-center gap-3 sm:gap-4 md:gap-6">
-                    <Link href="/"><h3 className="hover:cursor-pointer">Home</h3></Link>
-                    <Link href="/map"><h3 className="hover:cursor-pointer">Map</h3></Link>
-                    <Link href="/about"><h3 className="hover:cursor-pointer">About</h3></Link>
-                    <Link href="/account"><h3 className="hover:cursor-pointer">Account</h3></Link>
+                    <Link href="/"><h3 className={`hover:cursor-pointer ${selectedTab === "/" ? "font-bold" : ""}`}>Home</h3></Link>
+                    <Link href="/map"><h3 className={`hover:cursor-pointer ${selectedTab === "/map" ? "font-bold" : ""}`}>Map</h3></Link>
+                    <Link href="/about"><h3 className={`hover:cursor-pointer ${selectedTab === "/about" ? "font-bold" : ""}`}>About</h3></Link>
+                    <Link href="/account"><h3 className={`hover:cursor-pointer ${selectedTab.startsWith("/account") ? "font-bold" : ""}`}>Account</h3></Link>
                     <SignedOut>
                         <div className="hover:cursor-pointer"><SignInButton /></div>
                         <SignUpButton>
