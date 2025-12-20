@@ -5,40 +5,47 @@ import { FaPlus } from "react-icons/fa";
 export default function ImageUpload() {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+    const previewsRef = useRef<string[]>([]);
 
     // Handle file selection w/ potentially multiple images
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
-        if (!files) return;
+        if (!files || files.length === 0) return;
 
-        const newPreviews: string[] = [];
-        for (let i = 0; i < files.length; i++) {
-            const url = URL.createObjectURL(files[i]);
-            newPreviews.push(url);
-        }
+        // Convert FileList to array and create preview URLs
+        const fileArray = Array.from(files);
+        const newPreviews = fileArray.map((file) => URL.createObjectURL(file));
 
         setImagePreviews((prev) => [...prev, ...newPreviews]);
+        previewsRef.current = [...previewsRef.current, ...newPreviews];
+
+        // Reset input so same files can be selected again
+        e.target.value = '';
     };
 
     // Remove individual image
     const removeImage = (index: number) => {
+        const urlToRevoke = imagePreviews[index];
+        URL.revokeObjectURL(urlToRevoke); // Clean up memory
+
         setImagePreviews((prev) => {
             const newPreviews = [...prev];
-            URL.revokeObjectURL(newPreviews[index]); // Clean up memory
             newPreviews.splice(index, 1);
             return newPreviews;
         });
+
+        previewsRef.current = previewsRef.current.filter(url => url !== urlToRevoke);
     };
 
-    // Cleanup object URLs on unmount
+    // Cleanup object URLs on unmount only
     useEffect(() => {
         return () => {
-            imagePreviews.forEach((url) => URL.revokeObjectURL(url));
+            previewsRef.current.forEach((url) => URL.revokeObjectURL(url));
         };
-    }, [imagePreviews]);
+    }, []);
 
     return (
-        <div className="border border-black rounded-lg h-32">
+        <div className="border border-[var(--bg-secondary)] rounded-lg h-32 w-full">
             {/* Hidden input */}
             <input
                 ref={fileInputRef}
@@ -59,10 +66,7 @@ export default function ImageUpload() {
                 </button>
             ) : (
                 // Has images, so show horizontal scrollable list with plus button
-                <div
-                    className="flex gap-2 h-full overflow-x-auto p-2"
-                    onClick={() => fileInputRef.current?.click()}
-                >
+                <div className="flex gap-2 h-full overflow-x-auto p-2 scrollbar-hide">
                     {imagePreviews.map((preview, index) => (
                         <div key={index} className="relative flex-shrink-0 h-full">
                             <img
@@ -83,8 +87,11 @@ export default function ImageUpload() {
                     ))}
                     {/* Plus button at the end */}
                     <button
-                        onClick={() => fileInputRef.current?.click()}
-                        className="flex-shrink-0 h-full w-20 flex items-center justify-center border border-dashed border-black rounded hover:bg-[var(--bg-secondary)] hover:cursor-pointer duration-150"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            fileInputRef.current?.click();
+                        }}
+                        className="flex-shrink-0 h-full w-20 flex items-center justify-center border border-dashed border-[var(--bg-secondary)] rounded hover:bg-[var(--bg-secondary)] hover:cursor-pointer duration-150"
                     >
                         <FaPlus size={24} />
                     </button>

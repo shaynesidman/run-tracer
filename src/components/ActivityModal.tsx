@@ -28,7 +28,7 @@ export default function ActivityModal({ isOpen, onClose, activity}: { isOpen: bo
         >
             <div className="flex flex-col items-center justify-center min-h-screen">
                 <div 
-                    className="bg-[var(--bg-secondary)] rounded-lg min-w-md max-w-lg mx-4 flex flex-col gap-2 px-2 pb-2"
+                    className="bg-[var(--bg-primary)] rounded-lg w-md mx-4 flex flex-col gap-2 px-2 pb-2"
                     onClick={(e) => e.stopPropagation()}
                 >
                     <div className="pt-2 self-end hover:cursor-pointer" onClick={onClose}><IoIosClose /></div>

@@ -25,3 +25,13 @@ body {
     color: var(--text-primary);
     background-color: var(--bg-primary);
 }
+
+/* Hide scrollbar while maintaining scroll functionality */
+.scrollbar-hide {
+    scrollbarWidth: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none; /* Chrome/Safari/Opera */
+}
