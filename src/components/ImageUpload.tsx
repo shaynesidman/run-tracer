@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import { IoIosClose } from "react-icons/io";
 import { FaPlus } from "react-icons/fa";
+import { MdDriveFolderUpload } from "react-icons/md";
 
 export default function ImageUpload() {
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -60,9 +61,10 @@ export default function ImageUpload() {
                 // No images, so show upload button
                 <button
                     onClick={() => fileInputRef.current?.click()}
-                    className="w-full h-full p-2 hover:cursor-pointer"
+                    className="w-full h-full p-2 hover:cursor-pointer flex flex-col justify-center items-center gap-2"
                 >
-                    Upload Images
+                    <MdDriveFolderUpload size={32} />
+                    <p className="text-sm">Upload Images</p>
                 </button>
             ) : (
                 // Has images, so show horizontal scrollable list with plus button
