@@ -2,27 +2,10 @@ import { type Activity } from "@/types/activity";
 import MiniMap from './MiniMap';
 import { useState } from "react";
 import ActivityModal from "./ActivityModal";
+import { formatDate, formatTime } from "@/lib/formatDates";
 
 export default function ActivityCard({ activity }: { activity: Activity }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const formatDate = (timestamp: string) => {
-        const date = new Date(timestamp);
-        return date.toLocaleDateString('en-US', {
-            month: 'short',
-            day: 'numeric',
-            year: 'numeric'
-        });
-    };
-
-    const formatTime = (timestamp: string) => {
-        const date = new Date(timestamp);
-        return date.toLocaleTimeString('en-US', {
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: true
-        });
-    };
 
     return (
         <>
