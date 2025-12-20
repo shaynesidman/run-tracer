@@ -351,13 +351,13 @@ export default function Map() {
             )}
 
             {/* Legend */}
-            <div className="absolute bottom-9 left-2 flex flex-col gap-1 text-sm space-y-2 px-6 py-4 rounded-md border border-[var(--bg-secondary)]">
+            <div className="absolute bottom-9 left-2 flex flex-col gap-1 text-sm space-y-2 px-6 py-4 rounded-md bg-[var(--bg-secondary)]">
                 {/* Mode Selection */}
                 <div className="flex gap-1 text-xs">
                     <button
                         onClick={() => setMode("click")}
                         className={`px-2 py-1 rounded-md hover:cursor-pointer ${
-                            mode === "click" ? "bg-[var(--bg-primary)] text-[var(--text-primary)]" : "bg-[var(--bg-tertiary)] text-[var(--text-secondary)]"
+                            mode === "click" ? "bg-[var(--bg-primary)] text-[var(--text-primary)] border border-[var(--bg-tertiary)]" : "bg-[var(--bg-tertiary)] text-[var(--text-secondary)]"
                         }`}
                     >
                         Click Mode
@@ -365,7 +365,7 @@ export default function Map() {
                     <button
                         onClick={() => setMode("route")}
                         className={`px-2 py-1 rounded-md hover:cursor-pointer ${
-                            mode === "route" ? "bg-[var(--bg-primary)] text-[var(--text-primary)]" : "bg-[var(--bg-tertiary)] text-[var(--text-secondary)]"
+                            mode === "route" ? "bg-[var(--bg-primary)] text-[var(--text-primary)] border border-[var(--bg-tertiary)]" : "bg-[var(--bg-tertiary)] text-[var(--text-secondary)]"
                         }`}
                     >
                         Route Mode
@@ -373,7 +373,7 @@ export default function Map() {
                     <button
                         onClick={() => setMode("draw")}
                         className={`px-2 py-1 rounded-md hover:cursor-pointer ${
-                            mode === "draw" ? "bg-[var(--bg-primary)] text-[var(--text-primary)]" : "bg-[var(--bg-tertiary)] text-[var(--text-secondary)]"
+                            mode === "draw" ? "bg-[var(--bg-primary)] text-[var(--text-primary)] border border-[var(--bg-tertiary)]" : "bg-[var(--bg-tertiary)] text-[var(--text-secondary)]"
                         }`}
                     >
                         Draw Mode
