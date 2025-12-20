@@ -2,7 +2,7 @@ export default function LoadingSpinner() {
     return (
         <div className="px-6 py-4 rounded-lg border border-[var(--bg-secondary)]">
             <svg 
-                className="animate-spin h-8 w-8 text-white/70" 
+                className="animate-spin h-8 w-8 text-[var(--text-primary)]/70" 
                 xmlns="http://www.w3.org/2000/svg" 
                 fill="none" 
                 viewBox="0 0 24 24"
