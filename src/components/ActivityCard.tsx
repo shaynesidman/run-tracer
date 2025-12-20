@@ -1,7 +1,11 @@
 import { type Activity } from "@/types/activity";
 import MiniMap from './MiniMap';
+import { useState } from "react";
+import ActivityModal from "./ActivityModal";
 
 export default function ActivityCard({ activity }: { activity: Activity }) {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
     const formatDate = (timestamp: string) => {
         const date = new Date(timestamp);
         return date.toLocaleDateString('en-US', {
@@ -20,8 +24,20 @@ export default function ActivityCard({ activity }: { activity: Activity }) {
         });
     };
 
+    if (isModalOpen) {
+        return <ActivityModal 
+            isOpen={isModalOpen} 
+            onClose={() => setIsModalOpen(false)} 
+            activity={activity} 
+        />;
+    }
+
     return (
-        <div key={activity.id} className="flex justify-center items-center rounded-lg gap-4 px-4 py-2 mb-4 border border-[var(--bg-secondary)]">
+        <div 
+            key={activity.id} 
+            className="flex justify-center items-center rounded-lg gap-4 px-4 py-2 mb-4 border border-[var(--bg-secondary)] hover:cursor-pointer hover:bg-[var(--bg-secondary)] duration-300"
+            onClick={() => setIsModalOpen(true)}
+        >
             <div className="flex flex-col">
                 <p>{activity.type}</p>
                 <p>{formatDate(activity.time)}</p>
