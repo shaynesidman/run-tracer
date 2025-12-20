@@ -35,7 +35,7 @@ export default function ActivityModal({ isOpen, onClose, activity}: { isOpen: bo
                     <div className="pt-2 self-end hover:cursor-pointer" onClick={onClose}><IoIosClose /></div>
                     <div className="flex flex-col gap-4 px-2">
                         <div className="flex gap-4"> 
-                            <div className="w-1/4 flex flex-col justify-center items-center gap-8">
+                            <div className="w-1/3 flex flex-col justify-center items-center gap-8">
                                 <div className="flex flex-col items-center text-center">
                                     <p className="text-xs">Type</p>
                                     <p>{activity.type}</p>
