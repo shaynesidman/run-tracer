@@ -18,7 +18,7 @@ export default function AccountAllRuns() {
     return (
         <div className="w-full h-full flex flex-col">
             <AllRuns />
-            <Link href="/map" className="w-full border border-[var(--bg-secondary)] text-center p-2 rounded-lg">
+            <Link href="/map" className="w-full border border-[var(--bg-secondary)] text-center p-2 rounded-lg hover:cursor-pointer hover:bg-[var(--bg-secondary)] duration-300">
                 Go to map to add more runs
             </Link>
         </div>
