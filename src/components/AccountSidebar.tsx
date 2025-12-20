@@ -15,8 +15,8 @@ export default function AccountSidebar() {
     
     return (
         <aside className="h-full self-start border-r border-[var(--bg-secondary)] flex flex-col gap-4 p-4">
-            <Link href="/account/info" className={selectedTab === "/account/info" ? "font-bold" : ""}>Account Information</Link>
-            <Link href="/account/allRuns" className={selectedTab === "/account/allRuns" ? "font-bold" : ""}>All Activities</Link>
+            <Link href="/account/info" className={selectedTab === "/account/info" ? "font-bold" : ""}>Account</Link>
+            <Link href="/account/allRuns" className={selectedTab === "/account/allRuns" ? "font-bold" : ""}>History</Link>
         </aside>
     );
 }

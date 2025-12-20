@@ -388,17 +388,17 @@ export default function Map() {
                             type="number"
                             value={targetDistance}
                             onChange={(e) => setTargetDistance(Number(e.target.value))}
-                            className="w-20 border rounded px-1 py-0.5 bg-[var(--bg-tertiary)] text-[var(--text-secondary)]"
+                            className="w-16 px-1 bg-[var(--bg-secondary)] focus:outline-none focus:ring-0 border rounded border-[var(--bg-tertiary)]"
                         />
                         <span className="ml-1">mi</span>
                     </div>
                 )}
 
                 <div>Total Distance: {totalDistance.toFixed(2)} mi</div>
-                <div className="flex gap-4 items-center">
+                <div className="flex gap-2 items-center">
                     <span>Activity Type:</span>
                     <input
-                        className="w-37 px-2 rounded"
+                        className="w-32 px-2 rounded focus:outline-none focus:ring-0 border-1 border-[var(--bg-tertiary)]"
                         placeholder="Run"
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                             setActivityType(e.target.value);
