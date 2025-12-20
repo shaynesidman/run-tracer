@@ -1,11 +1,13 @@
 import { createPortal } from "react-dom";
-import { useState, useEffect } from "react";
 import { Activity } from "@/types/activity";
 import { IoIosClose } from "react-icons/io";
 import MiniMap from "./MiniMap";
 import ImageUpload from "./ImageUpload";
+import useEscapeKey from "@/hooks/useEscapeKey";
 
 export default function ActivityModal({ isOpen, onClose, activity}: { isOpen: boolean; onClose: () => void; activity: Activity }) {    
+    useEscapeKey(onClose);
+    
     if (!isOpen) return null;
 
     return createPortal(
