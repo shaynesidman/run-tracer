@@ -1,3 +1,4 @@
+import Link from "next/link";
 
 export default function About() {
     return (
@@ -11,6 +12,9 @@ export default function About() {
             <p>In <span className="font-bold">route mode</span>, users enter a desired distance and start point, and a route of the desired distance is automatically prepared for them which begins and ends at the specified start point.</p>
             <p>In <span className="font-bold">draw mode</span>, users draw their path and the corresponding distance is displayed.</p>
             <p>Users can additionally enter the type of activity that they are performing. If no activity is entered, it will default to running.</p>
+            <h3 className="font-bold text-xl">About the author</h3>
+            <p>RunTracer was created as a passion project by <Link href="https://shaynesidman.com" className="underline">Shayne Sidman</Link>. Shayne created RunTracer because he could no longer track his runs after his Apple Watch stopped being able to hold a charge following a system update.</p>
+            <p>Shayne began developing RunTracer in the summer of 2025. After a hiatus due to schoolwork, he picked it back up over winter break of 2025-26. </p>
         </section>
     );
 }
