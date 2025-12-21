@@ -29,13 +29,13 @@ export default function ActivityModal({ isOpen, onClose, activity}: { isOpen: bo
         >
             <div className="flex flex-col items-center justify-center min-h-screen">
                 <div 
-                    className="bg-[var(--bg-primary)] rounded-lg w-md mx-4 flex flex-col gap-2 px-2 pb-2"
+                    className="bg-[var(--bg-primary)] rounded-lg lg:w-md mx-4 flex flex-col gap-2 px-2 pb-2"
                     onClick={(e) => e.stopPropagation()}
                 >
                     <div className="pt-2 self-end hover:cursor-pointer" onClick={onClose}><IoIosClose /></div>
                     <div className="flex flex-col gap-4 px-2">
-                        <div className="flex gap-4"> 
-                            <div className="w-1/3 flex flex-col justify-center items-center gap-8">
+                        <div className="flex flex-col lg:flex-row gap-4"> 
+                            <div className="lg:w-1/3 flex flex-row lg:flex-col justify-center items-center gap-8">
                                 <div className="flex flex-col items-center text-center">
                                     <p className="text-xs">Type</p>
                                     <p>{activity.type}</p>

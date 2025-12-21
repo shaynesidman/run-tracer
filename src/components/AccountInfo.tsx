@@ -42,14 +42,14 @@ export default function AccountInfo() {
     if (!isSignedIn) {
         return (
             <div className="w-full border border-[var(--bg-secondary)] text-center p-4 rounded-lg">
-                Sign in to see account info and recent activity.
+                Sign in to see account info
             </div>
         );
     }
 
     return (
         <div className="w-full h-full p-4 flex flex-col justify-center gap-4 rounded-lg text-">
-            <div className="w-full flex flex-row justify-between items-center gap-2">
+            <div className="w-full flex flex-col-reverse lg:flex-row justify-between items-center gap-2">
                 <div className="w-full">
                     {(user.firstName || user.lastName) && (
                         <p>
