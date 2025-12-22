@@ -3,27 +3,28 @@
 import { useState, useEffect } from "react";
 import { type Activity } from "@/types/activity";
 import ActivityGrid from "./ActivityGrid";
+import { handleAPIResponse } from "@/lib/apiClient";
 
 export default function AllRuns() {
     const [allRuns, setAllRuns] = useState<Activity[] | null>(null);  // Initially null to prevent flashing due to empty array
 
     useEffect(() => {
+        const fetchActivities = async () => {
+            try {
+                const res = await fetch("/api/fetch/allRun", {
+                    method: "GET",
+                    headers: { "Content-Type": "application/json" }
+                });
+
+                const data = await handleAPIResponse<{ data: Activity[] }>(res);
+                setAllRuns(data.data.reverse());
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
         fetchActivities();
     }, []);
-
-    const fetchActivities = async () => {
-        try {
-            const res = await fetch("/api/fetch/allRuns", {
-                method: "GET",
-                headers: { "Content-Type": "application/json" }
-            });
-
-            const data = await res.json();
-            setAllRuns(data.data.reverse());
-        } catch (error) {
-            console.log(error);
-        }
-    };
 
     if (allRuns === null) {
         return;

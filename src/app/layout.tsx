@@ -24,7 +24,14 @@ export default function RootLayout({
                                 <NavBar />
                                 <div className="w-full max-w-5xl flex-1 flex justify-center">
                                     {children}
-                                    <Toaster />
+                                    <Toaster
+                                        richColors
+                                        toastOptions={{
+                                            style: {
+                                                border: "1px solid red"
+                                            }
+                                        }}
+                                    />
                                 </div>
                             </div>
                         </div>  

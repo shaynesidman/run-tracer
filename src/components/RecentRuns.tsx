@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { type Activity } from "@/types/activity";
 import LoadingSpinner from "./ui/LoadingSpinner";
 import ActivityGrid from "./ActivityGrid";
+import { handleAPIResponse } from "@/lib/apiClient";
 
 export default function RecentRuns() {
     const [recentRuns, setRecentRuns] = useState<Activity[] | null>(null);  // Initially null to prevent flashing due to empty array
@@ -20,7 +21,7 @@ export default function RecentRuns() {
                 headers: { "Content-Type": "application/json" }
             });
 
-            const data = await res.json();
+            const data = await handleAPIResponse<{ data: Activity[] }>(res);
             setRecentRuns(data.data);
         } catch (error) {
             console.log(error);

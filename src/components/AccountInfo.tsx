@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { type Activity } from "@/types/activity";
 import LoadingSpinner from "./ui/LoadingSpinner";
+import { handleAPIResponse } from "@/lib/apiClient";
 
 export default function AccountInfo() {
     const [distance, setDistance] = useState(0);
@@ -13,23 +14,23 @@ export default function AccountInfo() {
     const { isLoaded, isSignedIn, user } = useUser();
 
     useEffect(() => {
-        fetchAccountData();
-    }, []);
-
-    const fetchAccountData = async () => {
+        const fetchAccountData = async () => {
         try {
             const res = await fetch("/api/fetch/allRuns", {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
             });
 
-            const allRuns = await res.json();
+            const allRuns = await handleAPIResponse<{ data: Activity[] }>(res);
             setDistance(allRuns.data.reduce((acc: number, row: Activity) => acc + row.distance, 0));
             setTotalActivities(allRuns.data.length);           
         } catch (error) {
             console.log(error);
         }
     };
+
+        fetchAccountData();
+    }, []);
 
     // Loading spinner
     if (!isLoaded) {
