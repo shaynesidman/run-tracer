@@ -15,19 +15,19 @@ export default function AccountInfo() {
 
     useEffect(() => {
         const fetchAccountData = async () => {
-        try {
-            const res = await fetch("/api/fetch/allRuns", {
-                method: "GET",
-                headers: { "Content-Type": "application/json" },
-            });
+            try {
+                const res = await fetch("/api/fetch/allRuns", {
+                    method: "GET",
+                    headers: { "Content-Type": "application/json" },
+                });
 
-            const allRuns = await handleAPIResponse<{ data: Activity[] }>(res);
-            setDistance(allRuns.data.reduce((acc: number, row: Activity) => acc + row.distance, 0));
-            setTotalActivities(allRuns.data.length);           
-        } catch (error) {
-            console.log(error);
-        }
-    };
+                const allRuns = await handleAPIResponse<{ data: Activity[] }>(res);
+                setDistance(allRuns.data.reduce((acc: number, row: Activity) => acc + row.distance, 0));
+                setTotalActivities(allRuns.data.length);           
+            } catch (error) {
+                console.log(error);
+            }
+        };
 
         fetchAccountData();
     }, []);
