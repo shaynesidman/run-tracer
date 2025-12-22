@@ -10,6 +10,7 @@ import destination from "@turf/destination";
 import { point as turfPoint } from "@turf/helpers";
 import { useUser } from "@clerk/nextjs";
 import LoadingSpinner from "./ui/LoadingSpinner";
+import { toast } from "sonner";
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN!;
 
@@ -146,8 +147,8 @@ export default function Map() {
                         const coords = route.geometry.coordinates as [number, number][];
                         setPoints(coords);
                     }
-                } catch (err) {
-                    console.error("Error fetching route:", err);
+                } catch (e) {
+                    toast.error("Error fetching route: " + e);
                 }
             } else {
                 setPoints((prev) => [...prev, start]);
@@ -321,8 +322,8 @@ export default function Map() {
                 }
 
                 return data.routes[0];
-            } catch (error) {
-                console.error("Error fetching route:", error);
+            } catch (e) {
+                toast.error("Error fetching route: " + e);
                 return null;
             }
         };
@@ -399,14 +400,14 @@ export default function Map() {
             const data = await res.json();
 
             if (!data.routes || data.routes.length === 0) {
-                console.log("No fallback route found");
+                toast.error("No fallback route found");
                 return null;
             }
 
             console.log("Fallback out-and-back route generated");
             return data.routes[0];
-        } catch (error) {
-            console.error("Error fetching fallback route:", error);
+        } catch (e) {
+            toast.error("Error fetching route: " + e);
             return null;
         }
     }

@@ -28,7 +28,7 @@ export default function RootLayout({
                                         richColors
                                         toastOptions={{
                                             style: {
-                                                border: "1px solid red"
+                                                border: "1px solid red",
                                             }
                                         }}
                                     />
