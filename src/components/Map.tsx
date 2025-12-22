@@ -439,8 +439,8 @@ export default function Map() {
             clearPoints(); // Remove saved route
             setShowSuccess(true);
             setTimeout(() => setShowSuccess(false), 2000);
-        } catch (error) {
-            console.log(error);
+        } catch (e) {
+            toast.error("Error: " + e);
         }
 
         setSubmitting(false);
