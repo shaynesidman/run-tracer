@@ -56,24 +56,24 @@ export default function Map() {
         fetchCoordinates();
     }, []);
 
-    // useEffect(() => {
-    //     if (!map.current) return;
+    useEffect(() => {
+        if (!map.current) return;
 
-    //     const mapInstance = map.current;
-    //     modeRef.current = mode;
+        const mapInstance = map.current;
+        modeRef.current = mode;
 
-    //     if (mode === "draw") {
-    //         mapInstance.touchZoomRotate.disable();
-    //         mapInstance.doubleClickZoom.disable();
-    //         mapInstance.dragPan.disable();
-    //         mapInstance.dragRotate.disable();
-    //     } else {
-    //         mapInstance.touchZoomRotate.enable();
-    //         mapInstance.doubleClickZoom.enable();
-    //         mapInstance.dragPan.enable();
-    //         mapInstance.dragRotate.enable();
-    //     }
-    // }, [mode]);
+        if (mode === "draw") {
+            mapInstance.touchZoomRotate.disable();
+            mapInstance.doubleClickZoom.disable();
+            mapInstance.dragPan.disable();
+            mapInstance.dragRotate.disable();
+        } else {
+            mapInstance.touchZoomRotate.enable();
+            mapInstance.doubleClickZoom.enable();
+            mapInstance.dragPan.enable();
+            mapInstance.dragRotate.enable();
+        }
+    }, [mode]);
 
     useEffect(() => {
         targetDistanceRef.current = targetDistance;
@@ -160,7 +160,7 @@ export default function Map() {
             if (modeRef.current !== "draw") return;
             e.preventDefault();
             isDrawingRef.current = true;
-            setPoints([[e.lngLat.lng, e.lngLat.lat]]);
+            setPoints((prev) => [...prev, [e.lngLat.lng, e.lngLat.lat]]);
         };
     
         let lastMove = 0;
@@ -190,16 +190,16 @@ export default function Map() {
         // Mobile drawing handler for starting draw mode
         const handleTouchStart = (e: mapboxgl.MapTouchEvent) => {
             if (modeRef.current !== "draw") return;
-            
+
             if (e.originalEvent) {
                 e.originalEvent.preventDefault();
                 e.originalEvent.stopPropagation();
             }
-            
+
             isDrawingRef.current = true;
 
             const lngLat = e.lngLat;
-            setPoints([[lngLat.lng, lngLat.lat]]);
+            setPoints((prev) => [...prev, [lngLat.lng, lngLat.lat]]);
         };
 
         // Mobile drawing handler for draw mode
