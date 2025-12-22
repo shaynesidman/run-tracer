@@ -5,7 +5,7 @@ import { IoIosClose } from "react-icons/io";
 import MiniMap from "./MiniMap";
 import ImageUpload from "./ImageUpload";
 import useEscapeKey from "@/hooks/useEscapeKey";
-import { formatDate } from "@/lib/formatDates";
+import { formatDate } from "@/utils/formatDates";
 
 export default function ActivityModal({ isOpen, onClose, activity}: { isOpen: boolean; onClose: () => void; activity: Activity }) {    
     // Close modal when escape key is pressed

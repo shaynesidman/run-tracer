@@ -24,6 +24,7 @@ export default function RootLayout({
                                 <NavBar />
                                 <div className="w-full max-w-5xl flex-1 flex justify-center">
                                     {children}
+                                    <Toaster />
                                 </div>
                             </div>
                         </div>  

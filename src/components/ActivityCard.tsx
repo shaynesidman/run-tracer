@@ -2,7 +2,7 @@ import { type Activity } from "@/types/activity";
 import MiniMap from './MiniMap';
 import { useState } from "react";
 import ActivityModal from "./ActivityModal";
-import { formatDate, formatTime } from "@/lib/formatDates";
+import { formatDate, formatTime } from "@/utils/formatDates";
 
 export default function ActivityCard({ activity }: { activity: Activity }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
