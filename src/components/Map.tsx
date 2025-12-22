@@ -19,14 +19,14 @@ export default function Map() {
 
     const [points, setPoints] = useState<[number, number][]>([]);
     const [totalDistance, setTotalDistance] = useState(0);
-    const [targetDistance, setTargetDistance] = useState(1); // miles
+    const [targetDistance, setTargetDistance] = useState(1); // in miles
     const [activityType, setActivityType] = useState("Run");
     const [submitting, setSubmitting] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
 
     const [mode, setMode] = useState<"click" | "route" | "draw">("click");
     const modeRef = useRef<"click" | "route" | "draw">("click");
-    const targetDistanceRef = useRef(1);
+    const targetDistanceRef = useRef(1); // in miles
 
     const isDrawingRef = useRef(false);
 
@@ -282,7 +282,7 @@ export default function Map() {
     const fetchLoopRoute = async (start: [number, number], miles: number) => {
         const startTime = Date.now();
         const TIMEOUT_MS = 10000; // Timeout after 10 seconds
-        const TOLERANCE = 0.1; // Route can be ±10% of desired mileage
+        const TOLERANCE = 0.1; // Route can be +/-10% of desired mileage
         const MIN_DISTANCE = miles * (1 - TOLERANCE);
         const MAX_DISTANCE = miles * (1 + TOLERANCE);
 
