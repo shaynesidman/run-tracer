@@ -2,7 +2,6 @@ import { type Activity } from "@/types/activity";
 import ActivityCard from "./ActivityCard";
 
 export default function ActivityGrid({ activities, onlyRecent }: { activities: Activity[], onlyRecent: boolean }) {
-    
     if (onlyRecent) {
         return (
             <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
