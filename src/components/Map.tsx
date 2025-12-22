@@ -26,6 +26,7 @@ export default function Map() {
 
     const [mode, setMode] = useState<"click" | "route" | "draw">("click");
     const modeRef = useRef<"click" | "route" | "draw">("click");
+    const targetDistanceRef = useRef(1);
 
     const isDrawingRef = useRef(false);
 
@@ -59,7 +60,7 @@ export default function Map() {
 
         const mapInstance = map.current;
         modeRef.current = mode;
-        
+
         if (mode === "draw") {
             mapInstance.touchZoomRotate.disable();
             mapInstance.doubleClickZoom.disable();
@@ -72,6 +73,10 @@ export default function Map() {
             mapInstance.dragRotate.enable();
         }
     }, [mode]);
+
+    useEffect(() => {
+        targetDistanceRef.current = targetDistance;
+    }, [targetDistance]);
 
     useEffect(() => {
         if (!map.current) return;
@@ -136,7 +141,7 @@ export default function Map() {
             const start: [number, number] = [e.lngLat.lng, e.lngLat.lat];
             if (modeRef.current === "route") {
                 try {
-                    const route = await fetchLoopRoute(start, targetDistance);
+                    const route = await fetchLoopRoute(start, targetDistanceRef.current);
                     if (route) {
                         const coords = route.geometry.coordinates as [number, number][];
                         setPoints(coords);
@@ -275,24 +280,137 @@ export default function Map() {
     };
 
     const fetchLoopRoute = async (start: [number, number], miles: number) => {
-        const startPoint = turfPoint(start);
-        const bearing = Math.random() * 360;
-        const midPoint = destination(startPoint, miles / 2, bearing, {
-            units: "miles",
-        }).geometry.coordinates;
+        const startTime = Date.now();
+        const TIMEOUT_MS = 10000; // Timeout after 10 seconds
+        const TOLERANCE = 0.1; // Route can be ±10% of desired mileage
+        const MIN_DISTANCE = miles * (1 - TOLERANCE);
+        const MAX_DISTANCE = miles * (1 + TOLERANCE);
 
-        const coords = [start.join(","), midPoint.join(","), start.join(",")].join(";");
-        const url = `https://api.mapbox.com/directions/v5/mapbox/walking/${coords}?geometries=geojson&access_token=${mapboxgl.accessToken}`;
+        // Generate waypoints in a circle pattern around start point
+        const generateWaypoints = (radiusMiles: number, numPoints: number = 6): [number, number][] => {
+            const waypoints: [number, number][] = [];
+            const startPoint = turfPoint(start);
 
-        const res = await fetch(url);
-        const data = await res.json();
+            // Add random rotation up to 60 deg so routes vary each time
+            const rotationOffset = Math.random() * 60;
+            for (let i = 0; i < numPoints; i++) {
+                const bearing = (360 / numPoints) * i + rotationOffset;
+                const point = destination(startPoint, radiusMiles, bearing, {
+                    units: "miles",
+                });
+                waypoints.push(point.geometry.coordinates as [number, number]);
+            }
 
-        if (!data.routes || data.routes.length === 0) {
-            console.log("No routes found");
-            return null;
+            return waypoints;
+        };
+
+        // Request a route from Mapbox from start through all waypoints and back to start
+        const requestRoute = async (waypoints: [number, number][]) => {
+            const coords = [start, ...waypoints, start]
+                .map(coord => coord.join(","))
+                .join(";");
+
+            const url = `https://api.mapbox.com/directions/v5/mapbox/walking/${coords}?geometries=geojson&access_token=${mapboxgl.accessToken}`;
+
+            try {
+                const res = await fetch(url);
+                const data = await res.json();
+
+                if (!data.routes || data.routes.length === 0) {
+                    return null;
+                }
+
+                return data.routes[0];
+            } catch (error) {
+                console.error("Error fetching route:", error);
+                return null;
+            }
+        };
+
+        // Try to find a loop route by iteratively adjusting the radius
+        // Start with theoretical radius for a circular loop: r = circumference / (2π)
+        let radiusMiles = miles / (2 * Math.PI);
+        let attempts = 0;
+        const MAX_ATTEMPTS = 20;
+
+        console.log(`Searching for ${miles}mi loop route...`);
+
+        while (Date.now() - startTime < TIMEOUT_MS && attempts < MAX_ATTEMPTS) {
+            attempts++;
+
+            // Generate waypoints at current radius
+            const waypoints = generateWaypoints(radiusMiles);
+
+            // Request route through these waypoints
+            const route = await requestRoute(waypoints);
+
+            if (!route) {
+                console.log(`Attempt ${attempts}: No route found, increasing radius`);
+                radiusMiles *= 1.2; // Increase radius and try again
+                continue;
+            }
+
+            // Mapbox returns distance in meters, convert to miles
+            const actualDistanceMiles = route.distance / 1609.34;
+
+            console.log(
+                `Attempt ${attempts}: Target=${miles.toFixed(2)}mi, ` +
+                `Actual=${actualDistanceMiles.toFixed(2)}mi, ` +
+                `Radius=${radiusMiles.toFixed(2)}mi`
+            );
+
+            // Check if we're within acceptable tolerance
+            if (actualDistanceMiles >= MIN_DISTANCE && actualDistanceMiles <= MAX_DISTANCE) {
+                console.log(`✓ Found acceptable loop route in ${attempts} attempts!`);
+                return route;
+            }
+
+            // Adjust radius based on how far off we are
+            if (actualDistanceMiles < MIN_DISTANCE) {
+                // Route too short, increase radius
+                const adjustmentFactor = Math.min(1.3, miles / actualDistanceMiles * 0.5);
+                radiusMiles *= adjustmentFactor;
+            } else {
+                // Route too long, decrease radius
+                const adjustmentFactor = Math.max(0.7, actualDistanceMiles / miles * 0.5);
+                radiusMiles *= adjustmentFactor;
+            }
         }
 
-        return data.routes[0];
+        // Fallback: Create an out-and-back route
+        console.log(
+            `Could not find loop route after ${attempts} attempts (${(Date.now() - startTime) / 1000}s). ` +
+            `Falling back to out-and-back route.`
+        );
+
+        const fallbackBearing = Math.random() * 360;
+        const outPoint = destination(turfPoint(start), miles / 2, fallbackBearing, {
+            units: "miles",
+        });
+
+        const fallbackCoords = [
+            start.join(","),
+            outPoint.geometry.coordinates.join(","),
+            start.join(",")
+        ].join(";");
+
+        const fallbackUrl = `https://api.mapbox.com/directions/v5/mapbox/walking/${fallbackCoords}?geometries=geojson&access_token=${mapboxgl.accessToken}`;
+
+        try {
+            const res = await fetch(fallbackUrl);
+            const data = await res.json();
+
+            if (!data.routes || data.routes.length === 0) {
+                console.log("No fallback route found");
+                return null;
+            }
+
+            console.log("Fallback out-and-back route generated");
+            return data.routes[0];
+        } catch (error) {
+            console.error("Error fetching fallback route:", error);
+            return null;
+        }
     }
 
     const clearPoints = () => {
@@ -388,7 +506,7 @@ export default function Map() {
                             type="number"
                             value={targetDistance}
                             onChange={(e) => setTargetDistance(Number(e.target.value))}
-                            className="w-16 px-1 border border-[var(--bg-secondary)] focus:outline-none focus:ring-0 border rounded border-[var(--bg-tertiary)]"
+                            className="w-16 px-2 py-1 rounded border border-[var(--bg-tertiary)] bg-[var(--bg-primary)] text-[var(--text-primary)] focus:outline-none focus:ring-0"
                         />
                         <span className="ml-1">mi</span>
                     </div>
