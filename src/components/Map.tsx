@@ -63,12 +63,10 @@ export default function Map() {
         modeRef.current = mode;
 
         if (mode === "draw") {
-            mapInstance.touchZoomRotate.disable();
             mapInstance.doubleClickZoom.disable();
             mapInstance.dragPan.disable();
             mapInstance.dragRotate.disable();
         } else {
-            mapInstance.touchZoomRotate.enable();
             mapInstance.doubleClickZoom.enable();
             mapInstance.dragPan.enable();
             mapInstance.dragRotate.enable();
