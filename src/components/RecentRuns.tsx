@@ -48,7 +48,7 @@ export default function RecentRuns() {
 
     // User has tracked at least one run; show most recent 3 runs
     if (recentRuns.length > 0) {
-        return <ActivityGrid activities={recentRuns} />;
+        return <ActivityGrid activities={recentRuns} onlyRecent={true} />;
     }
 
     // User has not tracked any runs

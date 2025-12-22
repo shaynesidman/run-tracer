@@ -11,13 +11,13 @@ export default function AllRuns() {
     useEffect(() => {
         const fetchActivities = async () => {
             try {
-                const res = await fetch("/api/fetch/allRun", {
+                const res = await fetch("/api/fetch/allRuns", {
                     method: "GET",
                     headers: { "Content-Type": "application/json" }
                 });
 
                 const data = await handleAPIResponse<{ data: Activity[] }>(res);
-                setAllRuns(data.data.reverse());
+                setAllRuns(data.data);
             } catch (error) {
                 console.log(error);
             }
@@ -32,7 +32,7 @@ export default function AllRuns() {
 
     // User has tracked at least one run
     if (allRuns.length > 0) {
-        return <ActivityGrid activities={allRuns} />;
+        return <ActivityGrid activities={allRuns} onlyRecent={false} />;
     }
 
     // User has not tracked any runs
