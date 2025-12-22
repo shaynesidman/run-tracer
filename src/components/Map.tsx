@@ -56,24 +56,24 @@ export default function Map() {
         fetchCoordinates();
     }, []);
 
-    useEffect(() => {
-        if (!map.current) return;
+    // useEffect(() => {
+    //     if (!map.current) return;
 
-        const mapInstance = map.current;
-        modeRef.current = mode;
+    //     const mapInstance = map.current;
+    //     modeRef.current = mode;
 
-        if (mode === "draw") {
-            mapInstance.touchZoomRotate.disable();
-            mapInstance.doubleClickZoom.disable();
-            mapInstance.dragPan.disable();
-            mapInstance.dragRotate.disable();
-        } else {
-            mapInstance.touchZoomRotate.enable();
-            mapInstance.doubleClickZoom.enable();
-            mapInstance.dragPan.enable();
-            mapInstance.dragRotate.enable();
-        }
-    }, [mode]);
+    //     if (mode === "draw") {
+    //         mapInstance.touchZoomRotate.disable();
+    //         mapInstance.doubleClickZoom.disable();
+    //         mapInstance.dragPan.disable();
+    //         mapInstance.dragRotate.disable();
+    //     } else {
+    //         mapInstance.touchZoomRotate.enable();
+    //         mapInstance.doubleClickZoom.enable();
+    //         mapInstance.dragPan.enable();
+    //         mapInstance.dragRotate.enable();
+    //     }
+    // }, [mode]);
 
     useEffect(() => {
         targetDistanceRef.current = targetDistance;
