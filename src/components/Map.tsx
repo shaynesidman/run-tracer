@@ -189,6 +189,12 @@ export default function Map() {
         const handleTouchStart = (e: mapboxgl.MapTouchEvent) => {
             if (modeRef.current !== "draw") return;
 
+            // Only draw with single touch - multi-touch is for pinch/zoom
+            if (e.originalEvent && e.originalEvent.touches.length > 1) {
+                isDrawingRef.current = false;
+                return;
+            }
+
             if (e.originalEvent) {
                 e.originalEvent.preventDefault();
                 e.originalEvent.stopPropagation();
@@ -203,6 +209,12 @@ export default function Map() {
         // Mobile drawing handler for draw mode
         const handleTouchMove = (e: mapboxgl.MapTouchEvent) => {
             if (modeRef.current !== "draw" || !isDrawingRef.current) return;
+
+            // Stop drawing if multi-touch detected (user is pinching to zoom)
+            if (e.originalEvent && e.originalEvent.touches.length > 1) {
+                isDrawingRef.current = false;
+                return;
+            }
 
             if (e.originalEvent) {
                 e.originalEvent.preventDefault();
