@@ -304,7 +304,7 @@ export default function Map() {
             return waypoints;
         };
 
-        // Request a route from Mapbox from start through all waypoints and back to start
+        // Request a route from mapbox from start through all waypoints and back to start
         const requestRoute = async (waypoints: [number, number][]) => {
             const coords = [start, ...waypoints, start]
                 .map(coord => coord.join(","))
@@ -368,12 +368,10 @@ export default function Map() {
             // Adjust radius based on how far off we are
             if (actualDistanceMiles < MIN_DISTANCE) {
                 // Route too short, increase radius
-                const adjustmentFactor = Math.min(1.3, miles / actualDistanceMiles * 0.5);
-                radiusMiles *= adjustmentFactor;
+                radiusMiles *= 1.3;
             } else {
                 // Route too long, decrease radius
-                const adjustmentFactor = Math.max(0.7, actualDistanceMiles / miles * 0.5);
-                radiusMiles *= adjustmentFactor;
+                radiusMiles *= 0.7;
             }
         }
 
