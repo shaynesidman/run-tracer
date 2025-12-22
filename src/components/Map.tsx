@@ -360,7 +360,7 @@ export default function Map() {
                 `Radius=${radiusMiles.toFixed(2)}mi`
             );
 
-            // Check if we're within acceptable tolerance
+            // If within desired distance, return the route
             if (actualDistanceMiles >= MIN_DISTANCE && actualDistanceMiles <= MAX_DISTANCE) {
                 console.log(`✓ Found acceptable loop route in ${attempts} attempts!`);
                 return route;
@@ -376,7 +376,7 @@ export default function Map() {
             }
         }
 
-        // Fallback: Create an out-and-back route
+        // Fallback: Create an out-and-back route (go down one path, and return on same path)
         console.log(
             `Could not find loop route after ${attempts} attempts (${(Date.now() - startTime) / 1000}s). ` +
             `Falling back to out-and-back route.`
