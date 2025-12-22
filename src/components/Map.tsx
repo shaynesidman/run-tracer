@@ -345,7 +345,7 @@ export default function Map() {
             )}
 
             {showSuccess && (
-                <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 border border-[var(--bg-secondary)]">
+                <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 border border-[var(--bg-secondary)] bg-[var(--bg-primary)] text-center p-2 rounded-lg">
                     Route submitted!
                 </div>
             )}
