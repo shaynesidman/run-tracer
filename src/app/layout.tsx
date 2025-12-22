@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 import NavBar from "@/components/NavBar";
 import "./globals.css";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
     title: "RunTracer | Plan and track your runs",
