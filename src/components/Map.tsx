@@ -191,6 +191,10 @@ export default function Map() {
 
             // Only draw with single touch - multi-touch is for pinch/zoom
             if (e.originalEvent && e.originalEvent.touches.length > 1) {
+                // If we were drawing, remove the point that was just added by the first finger
+                if (isDrawingRef.current) {
+                    setPoints((prev) => prev.slice(0, -1));
+                }
                 isDrawingRef.current = false;
                 return;
             }
@@ -213,6 +217,9 @@ export default function Map() {
             // Stop drawing if multi-touch detected (user is pinching to zoom)
             if (e.originalEvent && e.originalEvent.touches.length > 1) {
                 isDrawingRef.current = false;
+
+                // Remove the last point that was added just before the second finger touched
+                setPoints((prev) => prev.slice(0, -1));
                 return;
             }
 
