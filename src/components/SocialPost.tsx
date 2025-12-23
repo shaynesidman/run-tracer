@@ -66,7 +66,7 @@ export default function SocialPost({ activity }: { activity: Activity }) {
                     )}
                 </div>
             </div>
-            <div className="flex flex-row justify-center items-center gap-4">
+            <div className="flex flex-row justify-center items-center gap-8">
                 <div className="flex flex-col items-center text-center">
                     <p className="text-xs">Type</p>
                     <p>{activity.type}</p>

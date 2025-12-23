@@ -28,7 +28,7 @@ export default function SocialFeed() {
 
     return (
         <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mx-4">
-            {activities.reverse().map((activity: Activity) => (
+            {activities.map((activity: Activity) => (
                 <SocialPost key={activity.id} activity={activity} />
             ))}
         </div>
