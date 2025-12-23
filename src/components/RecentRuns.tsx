@@ -48,7 +48,14 @@ export default function RecentRuns() {
 
     // User has tracked at least one run; show most recent 3 runs
     if (recentRuns.length > 0) {
-        return <ActivityGrid activities={recentRuns} onlyRecent={true} />;
+        return (
+            <div className="flex flex-col gap-4">
+                <h3 className="self-start text-xl font-bold">Recent Runs</h3>
+                <ActivityGrid activities={recentRuns} onlyRecent={true} />
+            </div>
+        );
+        
+        
     }
 
     // User has not tracked any runs

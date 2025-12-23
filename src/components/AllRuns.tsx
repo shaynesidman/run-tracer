@@ -32,7 +32,13 @@ export default function AllRuns() {
 
     // User has tracked at least one run
     if (allRuns.length > 0) {
-        return <ActivityGrid activities={allRuns} onlyRecent={false} />;
+        return (
+            <div className="flex flex-col gap-4">
+                <h3 className="self-start text-xl font-bold">All Runs</h3>
+                <ActivityGrid activities={allRuns} onlyRecent={false} />
+            </div>
+        );
+        
     }
 
     // User has not tracked any runs
