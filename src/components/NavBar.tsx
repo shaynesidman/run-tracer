@@ -25,7 +25,7 @@ export default function NavBar() {
             <div className="max-w-5xl w-full flex justify-center items-center px-4">
                 <div className="flex flex-row justify-center items-center gap-3 sm:gap-4 md:gap-6">
                     <Link href="/"><h3 className={`hover:cursor-pointer ${selectedTab === "/" ? "font-bold" : ""}`}>Home</h3></Link>
-                    <Link href="/feed"><h3 className={`hover:cursor-pointer ${selectedTab === "/" ? "font-bold" : ""}`}>Feed</h3></Link>
+                    <Link href="/feed"><h3 className={`hover:cursor-pointer ${selectedTab === "/feed" ? "font-bold" : ""}`}>Feed</h3></Link>
                     <Link href="/map"><h3 className={`hover:cursor-pointer ${selectedTab === "/map" ? "font-bold" : ""}`}>Map</h3></Link>
                     <Link href="/about"><h3 className={`hover:cursor-pointer ${selectedTab === "/about" ? "font-bold" : ""}`}>About</h3></Link>
                     <Link href="/account"><h3 className={`hover:cursor-pointer ${selectedTab.startsWith("/account") ? "font-bold" : ""}`}>Account</h3></Link>
