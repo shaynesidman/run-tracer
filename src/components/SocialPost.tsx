@@ -19,7 +19,9 @@ export default function SocialPost({ activity }: { activity: Activity }) {
                     <p>{activity.distance.toFixed(2)}</p>
                 </div>
             </div>
-            <MiniMap activity={activity} />
+            <div className="h-48 md:h-auto">
+                <MiniMap activity={activity} />
+            </div>
         </div>
     );
 }
