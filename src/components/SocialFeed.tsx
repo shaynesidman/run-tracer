@@ -27,8 +27,8 @@ export default function SocialFeed() {
     }, []);
 
     return (
-        <div className="flex flex-col justify-center gap-8">
-            {activities.map((activity: Activity) => (
+        <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {activities.reverse().map((activity: Activity) => (
                 <SocialPost activity={activity} />
             ))}
         </div>
