@@ -1,18 +1,11 @@
 "use client";
 
 import { type Activity } from "@/types/activity";
+import { type UserData } from "@/types/user";
 import { formatDateCompact } from "@/utils/formatDates";
 import { handleAPIResponse } from "@/lib/apiClient";
 import MiniMap from "./MiniMap";
 import { useState, useEffect } from "react";
-
-type UserData = {
-    id: string;
-    firstName: string | null;
-    lastName: string | null;
-    email: string | null;
-    imageUrl: string;
-};
 
 export default function SocialPost({ activity }: { activity: Activity }) {
     const [user, setUser] = useState<UserData | null>(null);
