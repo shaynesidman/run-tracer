@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { handleAPIResponse } from "@/lib/apiClient";
 import { type Activity } from "@/types/activity";
+import SocialPost from "./SocialPost";
 
 export default function SocialFeed() {
     const [activities, setActivities] = useState<Activity[]>([]);
@@ -26,6 +27,10 @@ export default function SocialFeed() {
     }, []);
 
     return (
-        <></>
+        <div className="flex flex-col justify-center gap-8">
+            {activities.map((activity: Activity) => (
+                <SocialPost activity={activity} />
+            ))}
+        </div>
     );
 }
