@@ -532,7 +532,7 @@ export default function Map() {
                 <div className="flex gap-2 items-center">
                     <span>Activity Type:</span>
                     <input
-                        className="w-32 px-2 rounded focus:outline-none focus:ring-0 border-1 border-[var(--bg-tertiary)]"
+                        className="w-32 px-2 rounded focus:outline-none focus:ring-0 bg-[var(--bg-primary)] border-1 border-[var(--bg-tertiary)]"
                         placeholder="Run"
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                             setActivityType(e.target.value);
