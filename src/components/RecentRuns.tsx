@@ -60,8 +60,8 @@ export default function RecentRuns() {
 
     // User has not tracked any runs
     return (
-        <div className="border border-[var(--bg-secondary)] text-base sm:text-lg md:text-xl w-full px-4 sm:px-6 py-3 sm:py-4 rounded-lg">
-            <p className="w-full text-center">You have no recent runs.</p>
+        <div className="w-full border border-[var(--bg-secondary)] text-xl p-4 rounded-lg">
+            <p className="w-full text-center">You have no recent runs</p>
         </div>
     ); 
 }

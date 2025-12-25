@@ -43,7 +43,7 @@ export default function AllRuns() {
 
     // User has not tracked any runs
     return (
-        <div className="w-full border border-[var(--bg-secondary)] text-xl px-6 py-4 rounded-lg">
+        <div className="w-full border border-[var(--bg-secondary)] text-xl p-4 rounded-lg">
             <p className="w-full text-center">You have no runs</p>
         </div>
     ); 

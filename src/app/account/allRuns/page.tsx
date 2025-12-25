@@ -10,7 +10,7 @@ export default function AccountAllRuns() {
     if (!userId) {
         return (
             <div className="w-full border border-[var(--bg-secondary)] text-center p-4 rounded-lg">
-                Sign in to see account info and recent activity.
+                Sign in to see account info and recent activity
             </div>
         );
     }
