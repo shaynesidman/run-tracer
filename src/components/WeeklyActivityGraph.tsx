@@ -128,30 +128,22 @@ export default function WeeklyActivityGraph() {
 
             const yAxis = d3.axisLeft(yScale).ticks(5);
 
+            const fontFamily = "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif";
+
             g.append("g")
                 .attr("transform", `translate(0,${height})`)
                 .call(xAxis)
                 .selectAll("text")
                 .style("text-anchor", "end")
+                .style("font-family", fontFamily)
                 .attr("dx", "-.8em")
                 .attr("dy", ".15em")
                 .attr("transform", "rotate(-45)");
 
-            g.append("g").call(yAxis);
-
-            // Axis labels
-            g.append("text")
-                .attr("x", width / 2)
-                .attr("y", height + margin.bottom - 5)
-                .style("text-anchor", "middle")
-                .text("Week");
-
-            g.append("text")
-                .attr("transform", "rotate(-90)")
-                .attr("x", -height / 2)
-                .attr("y", -margin.left + 15)
-                .style("text-anchor", "middle")
-                .text("Distance (mi)");
+            g.append("g")
+                .call(yAxis)
+                .selectAll("text")
+                .style("font-family", fontFamily);
 
             // Line generator
             const line = d3
@@ -165,7 +157,7 @@ export default function WeeklyActivityGraph() {
                 .append("path")
                 .datum(weeklyData)
                 .attr("fill", "none")
-                .attr("stroke", "#4f46e5")
+                .attr("stroke", "#1E90FF")
                 .attr("stroke-width", 2.5)
                 .attr("d", line);
 
@@ -188,7 +180,7 @@ export default function WeeklyActivityGraph() {
                 .attr("cx", (d) => xScale(d.weekStart))
                 .attr("cy", (d) => yScale(d.totalDistance))
                 .attr("r", 0)
-                .attr("fill", "#4f46e5")
+                .attr("fill", "#1E90FF")
                 .style("cursor", "pointer")
                 .on("mouseover", function (event, d) {
                     d3.select(this).transition().duration(200).attr("r", 6);
@@ -249,18 +241,7 @@ export default function WeeklyActivityGraph() {
             <svg ref={svgRef} className="w-full" />
             <div
                 ref={tooltipRef}
-                style={{
-                    position: "absolute",
-                    opacity: 0,
-                    backgroundColor: "white",
-                    border: "1px solid #ddd",
-                    borderRadius: "4px",
-                    padding: "8px",
-                    pointerEvents: "none",
-                    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                    fontSize: "14px",
-                    transition: "opacity 0.2s",
-                }}
+                className="fixed opacity-0 bg-[var(--bg-primary)] border border-[var(--bg-secondary)] rounded px-2 py-1 pointer-events-none shadow-lg text-sm z-50 transition-opacity duration-200"
             />
         </div>
     );
