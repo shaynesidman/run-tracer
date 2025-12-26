@@ -143,9 +143,10 @@ export default function WeeklyActivityGraph() {
             const xAxis = d3
                 .axisBottom(xScale)
                 .ticks(6)
+                .tickSize(0)
                 .tickFormat((d) => d3.timeFormat("%b %d")(d as Date));
 
-            const yAxis = d3.axisLeft(yScale).ticks(5);
+            const yAxis = d3.axisLeft(yScale).ticks(5).tickSize(0);
 
             const fontFamily = "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif";
 
