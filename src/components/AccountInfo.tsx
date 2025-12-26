@@ -6,6 +6,7 @@ import Image from "next/image";
 import { type Activity } from "@/types/activity";
 import LoadingSpinner from "./ui/LoadingSpinner";
 import { handleAPIResponse } from "@/lib/apiClient";
+import WeeklyActivityGraph from "./WeeklyActivityGraph";
 
 export default function AccountInfo() {
     const [distance, setDistance] = useState(0);
@@ -79,6 +80,10 @@ export default function AccountInfo() {
             <div>
                 <p><span className="font-bold">Total Distance: </span>{distance.toFixed(2)} mi</p>
                 <p><span className="font-bold">Total Activities: </span>{totalActivities}</p>
+            </div>
+            <div className="w-full border border-[var(--bg-secondary)] rounded-lg p-4">
+                <h3 className="text-lg font-bold mb-4">Weekly Distance (Last 12 Weeks)</h3>
+                <WeeklyActivityGraph />
             </div>
         </div>
     );
