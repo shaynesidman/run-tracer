@@ -120,6 +120,25 @@ export default function WeeklyActivityGraph() {
                 .nice()
                 .range([height, 0]);
 
+            // Get background line color
+            const bgSecondary = getComputedStyle(document.documentElement)
+                .getPropertyValue('--bg-secondary')
+                .trim();
+
+            // Horizontal background lines
+            g.append("g")
+                .attr("class", "grid-lines")
+                .selectAll("line")
+                .data(yScale.ticks(5))
+                .enter()
+                .append("line")
+                .attr("x1", 0)
+                .attr("x2", width)
+                .attr("y1", (d) => yScale(d))
+                .attr("y2", (d) => yScale(d))
+                .style("stroke", bgSecondary)
+                .style("stroke-width", 1);
+
             // Axes
             const xAxis = d3
                 .axisBottom(xScale)
@@ -133,6 +152,7 @@ export default function WeeklyActivityGraph() {
             g.append("g")
                 .attr("transform", `translate(0,${height})`)
                 .call(xAxis)
+                .call(g => g.select(".domain").remove())
                 .selectAll("text")
                 .style("text-anchor", "end")
                 .style("font-family", fontFamily)
@@ -142,6 +162,7 @@ export default function WeeklyActivityGraph() {
 
             g.append("g")
                 .call(yAxis)
+                .call(g => g.select(".domain").remove())
                 .selectAll("text")
                 .style("font-family", fontFamily);
 
