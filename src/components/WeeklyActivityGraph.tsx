@@ -175,10 +175,17 @@ export default function WeeklyActivityGraph() {
                 .style("stroke", bgSecondary)
                 .style("stroke-width", 1);
 
+            // Determine number of x-axis ticks based on container width
+            const getXAxisTicks = (width: number): number => {
+                if (width < 640) return 3;  // Mobile: 3 ticks
+                if (width < 1024) return 4; // Tablet: 4 ticks
+                return 6;                    // Desktop: 6 ticks
+            };
+
             // Axes
             const xAxis = d3
                 .axisBottom(xScale)
-                .ticks(6)
+                .ticks(getXAxisTicks(containerWidth))
                 .tickSize(0)
                 .tickFormat((d) => d3.timeFormat("%b %d")(d as Date));
 
