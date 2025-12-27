@@ -11,16 +11,25 @@ interface WeeklyData {
     totalDistance: number;
 }
 
+// Helper function to determine number of weeks based on screen width
+const getWeeksToShow = (width: number): number => {
+    if (width < 640) return 4;  // Mobile: 4 weeks
+    if (width < 1024) return 8; // Tablet: 8 weeks
+    return 12;                   // Desktop: 12 weeks
+};
+
 export default function WeeklyActivityGraph() {
     const [weeklyData, setWeeklyData] = useState<WeeklyData[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [weeksToShow, setWeeksToShow] = useState(12);
+    const [allActivities, setAllActivities] = useState<Activity[]>([]);
     const svgRef = useRef<SVGSVGElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
     const tooltipRef = useRef<HTMLDivElement>(null);
 
-    // Fetch and process data
+    // Fetch data once
     useEffect(() => {
-        const fetchAndProcessData = async () => {
+        const fetchActivities = async () => {
             try {
                 setIsLoading(true);
                 const res = await fetch("/api/fetch/allRuns", {
@@ -29,48 +38,7 @@ export default function WeeklyActivityGraph() {
                 });
 
                 const allRuns = await handleAPIResponse<{ data: Activity[] }>(res);
-
-                // Process data into weekly buckets
-                const weeklyMap = new Map<string, number>();
-                const now = new Date();
-                const twelveWeeksAgo = new Date(now);
-                twelveWeeksAgo.setDate(now.getDate() - (12 * 7));
-
-                // Initialize all 12 weeks with 0's for distance
-                for (let i = 0; i < 12; i++) {
-                    const weekStart = new Date(twelveWeeksAgo);
-                    weekStart.setDate(twelveWeeksAgo.getDate() + (i * 7));
-                    weekStart.setHours(0, 0, 0, 0);
-                    const weekKey = weekStart.toISOString().split('T')[0];
-                    weeklyMap.set(weekKey, 0);
-                }
-
-                // Add activity distances to their respective weeks
-                allRuns.data.forEach((activity) => {
-                    const activityDate = new Date(activity.time);
-                    if (activityDate >= twelveWeeksAgo) {
-                        const daysSinceStart = Math.floor(
-                            (activityDate.getTime() - twelveWeeksAgo.getTime()) / (1000 * 60 * 60 * 24)
-                        );
-                        const weekIndex = Math.floor(daysSinceStart / 7);
-                        const weekStart = new Date(twelveWeeksAgo);
-                        weekStart.setDate(twelveWeeksAgo.getDate() + (weekIndex * 7));
-                        weekStart.setHours(0, 0, 0, 0);
-                        const weekKey = weekStart.toISOString().split('T')[0];
-
-                        weeklyMap.set(weekKey, (weeklyMap.get(weekKey) || 0) + activity.distance);
-                    }
-                });
-
-                // Convert to array and sort by date
-                const processedData: WeeklyData[] = Array.from(weeklyMap.entries())
-                    .map(([dateStr, distance]) => ({
-                        weekStart: new Date(dateStr),
-                        totalDistance: distance,
-                    }))
-                    .sort((a, b) => a.weekStart.getTime() - b.weekStart.getTime());
-
-                setWeeklyData(processedData);
+                setAllActivities(allRuns.data);
             } catch (error) {
                 console.log(error);
             } finally {
@@ -78,7 +46,75 @@ export default function WeeklyActivityGraph() {
             }
         };
 
-        fetchAndProcessData();
+        fetchActivities();
+    }, []);
+
+    // Process data when activities or weeks to show changes
+    useEffect(() => {
+        if (allActivities.length === 0) return;
+
+        const processData = () => {
+            // Process data into weekly buckets
+            const weeklyMap = new Map<string, number>();
+            const now = new Date();
+            const startDate = new Date(now);
+            startDate.setDate(now.getDate() - (weeksToShow * 7));
+
+            // Initialize all weeks with 0's for distance
+            for (let i = 0; i < weeksToShow; i++) {
+                const weekStart = new Date(startDate);
+                weekStart.setDate(startDate.getDate() + (i * 7));
+                weekStart.setHours(0, 0, 0, 0);
+                const weekKey = weekStart.toISOString().split('T')[0];
+                weeklyMap.set(weekKey, 0);
+            }
+
+            // Add activity distances to their respective weeks
+            allActivities.forEach((activity) => {
+                const activityDate = new Date(activity.time);
+                if (activityDate >= startDate) {
+                    const daysSinceStart = Math.floor(
+                        (activityDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)
+                    );
+                    const weekIndex = Math.floor(daysSinceStart / 7);
+                    if (weekIndex < weeksToShow) {
+                        const weekStart = new Date(startDate);
+                        weekStart.setDate(startDate.getDate() + (weekIndex * 7));
+                        weekStart.setHours(0, 0, 0, 0);
+                        const weekKey = weekStart.toISOString().split('T')[0];
+
+                        weeklyMap.set(weekKey, (weeklyMap.get(weekKey) || 0) + activity.distance);
+                    }
+                }
+            });
+
+            // Convert to array and sort by date
+            const processedData: WeeklyData[] = Array.from(weeklyMap.entries())
+                .map(([dateStr, distance]) => ({
+                    weekStart: new Date(dateStr),
+                    totalDistance: distance,
+                }))
+                .sort((a, b) => a.weekStart.getTime() - b.weekStart.getTime());
+
+            setWeeklyData(processedData);
+        };
+
+        processData();
+    }, [allActivities, weeksToShow]);
+
+    // Update weeks to show based on window size
+    useEffect(() => {
+        const updateWeeksToShow = () => {
+            const width = window.innerWidth;
+            setWeeksToShow(getWeeksToShow(width));
+        };
+
+        // Set initial value
+        updateWeeksToShow();
+
+        // Update on resize
+        window.addEventListener('resize', updateWeeksToShow);
+        return () => window.removeEventListener('resize', updateWeeksToShow);
     }, []);
 
     // Draw D3 graph
