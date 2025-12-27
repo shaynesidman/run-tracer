@@ -81,9 +81,11 @@ export default function AccountInfo() {
                 <p><span className="font-bold">Total Distance: </span>{distance.toFixed(2)} mi</p>
                 <p><span className="font-bold">Total Activities: </span>{totalActivities}</p>
             </div>
-            <div className="w-full border border-[var(--bg-secondary)] rounded-lg p-4">
+            <div>
                 <h3 className="text-lg font-bold mb-4">Weekly Distance (Last 12 Weeks)</h3>
-                <WeeklyActivityGraph />
+                <div className="w-full border border-[var(--bg-secondary)] rounded-lg p-4">
+                    <WeeklyActivityGraph />
+                </div>
             </div>
         </div>
     );
