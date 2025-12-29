@@ -442,7 +442,7 @@ export default function Map() {
         setSubmitting(true);
 
         try {
-            await fetch("/api/store", {
+            const res = await fetch("/api/store", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -453,9 +453,14 @@ export default function Map() {
                 }),
             });
 
-            clearPoints(); // Remove saved route
-            setShowSuccess(true);
-            setTimeout(() => setShowSuccess(false), 2000);
+            if (!res.ok) {
+                toast.error("Error storing route");
+            } else {
+                clearPoints(); // Remove saved route
+                setShowSuccess(true);
+                setTimeout(() => setShowSuccess(false), 2000);
+            }
+
         } catch (e) {
             toast.error("Error: " + e);
         }
