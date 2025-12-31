@@ -83,7 +83,7 @@ export default function AccountInfo() {
             </div>
             <div>
                 <h3 className="text-lg font-bold mb-4">Weekly Distance (Last 12 Weeks)</h3>
-                <div className="w-full border border-[var(--bg-secondary)] rounded-lg p-4">
+                <div className="w-full border border-[var(--bg-secondary)] rounded-lg px-2 lg:px-4">
                     <WeeklyActivityGraph />
                 </div>
             </div>
