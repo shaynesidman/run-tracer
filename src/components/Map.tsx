@@ -442,16 +442,16 @@ export default function Map() {
         setSubmitting(true);
 
         try {
-            const res = await fetch("/api/store", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    points,
-                    totalDistance,
-                    start: points[0],
-                    activityType: chosenActivityType,
-                }),
-            });
+            const res = await fetch("/api/store", { 
+                method: "POST", 
+                headers: { "Content-Type": "application/json" }, 
+                body: JSON.stringify({ 
+                    points, 
+                    totalDistance, 
+                    start: points[0], 
+                    activityType: chosenActivityType, 
+                }), 
+            }); 
 
             if (!res.ok) {
                 toast.error("Error storing route");
