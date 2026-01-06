@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import { toast } from "sonner";
 import { handleAPIResponse } from "@/lib/apiClient";
 import { type IncomingFriendRequest } from "@/types/friendship";
 import LoadingSpinner from "./ui/LoadingSpinner";
@@ -49,11 +50,13 @@ export default function IncomingRequestsTable() {
 
             await handleAPIResponse(res);
 
+            toast.success("Friend request accepted");
+
             // Refetch requests after accepting
             await fetchRequests();
         } catch (error) {
             console.error(error);
-            alert("Failed to accept friend request");
+            toast.error("Failed to accept friend request");
         }
     };
 
@@ -67,11 +70,13 @@ export default function IncomingRequestsTable() {
 
             await handleAPIResponse(res);
 
+            toast.success("Friend request rejected");
+
             // Refetch requests after rejecting
             await fetchRequests();
         } catch (error) {
             console.error(error);
-            alert("Failed to reject friend request");
+            toast.error("Failed to reject friend request");
         }
     };
 

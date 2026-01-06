@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import { toast } from "sonner";
 import { handleAPIResponse } from "@/lib/apiClient";
 import { type OutgoingFriendRequest } from "@/types/friendship";
 import LoadingSpinner from "./ui/LoadingSpinner";
@@ -49,11 +50,13 @@ export default function PendingRequestsTable() {
 
             await handleAPIResponse(res);
 
+            toast.success("Friend request cancelled");
+
             // Refetch requests after canceling
             await fetchRequests();
         } catch (error) {
             console.error(error);
-            alert("Failed to cancel friend request");
+            toast.error("Failed to cancel friend request");
         }
     };
 

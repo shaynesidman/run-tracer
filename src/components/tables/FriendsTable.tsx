@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import { toast } from "sonner";
 import { handleAPIResponse } from "@/lib/apiClient";
 import { type Friend } from "@/types/friendship";
 import LoadingSpinner from "../ui/LoadingSpinner";
@@ -49,11 +50,13 @@ export default function FriendsTable() {
 
             await handleAPIResponse(res);
 
+            toast.success("Friend removed successfully");
+
             // Refetch friends after unfriending
             await fetchFriends();
         } catch (error) {
             console.error(error);
-            alert("Failed to unfriend");
+            toast.error("Failed to remove friend");
         }
     };
 

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { toast } from "sonner";
 import { handleAPIResponse } from "@/lib/apiClient";
 import { type UserSearchResult } from "@/types/user";
 import LoadingSpinner from "./ui/LoadingSpinner";
@@ -10,19 +11,17 @@ export default function UserSearch() {
     const [email, setEmail] = useState("");
     const [searchResults, setSearchResults] = useState<UserSearchResult[]>([]);
     const [isSearching, setIsSearching] = useState(false);
-    const [error, setError] = useState("");
 
     const handleSearch = async (e: React.FormEvent) => {
         e.preventDefault();
 
         if (!email.trim()) {
-            setError("Please enter an email address");
+            toast.error("Please enter an email address");
             return;
         }
 
         try {
             setIsSearching(true);
-            setError("");
             const res = await fetch(`/api/users/search?email=${encodeURIComponent(email)}`, {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
@@ -32,11 +31,11 @@ export default function UserSearch() {
             setSearchResults(data.data);
 
             if (data.data.length === 0) {
-                setError("No users found with that email");
+                toast.error("No users found with that email");
             }
         } catch (error) {
             console.error(error);
-            setError("Failed to search users");
+            toast.error("Failed to search users");
         } finally {
             setIsSearching(false);
         }
@@ -52,6 +51,8 @@ export default function UserSearch() {
 
             await handleAPIResponse(res);
 
+            toast.success("Friend request sent");
+
             // Update the search results to reflect the new status
             setSearchResults((prev) =>
                 prev.map((user) =>
@@ -62,7 +63,7 @@ export default function UserSearch() {
             );
         } catch (error) {
             console.error(error);
-            alert("Failed to send friend request");
+            toast.error("Failed to send friend request");
         }
     };
 
@@ -98,7 +99,6 @@ export default function UserSearch() {
                         {isSearching ? "Searching..." : "Search"}
                     </button>
                 </div>
-                {error && <p className="text-red-500 mt-2 text-sm">{error}</p>}
             </form>
 
             {isSearching && (
