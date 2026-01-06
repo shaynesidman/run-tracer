@@ -15,4 +15,5 @@ export const friendsTable = pgTable("friends", {
     requesterId: text("requesterId").notNull(),
     addresseeId: text("addresseeId").notNull(),
     status: text("status").notNull(),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
 });

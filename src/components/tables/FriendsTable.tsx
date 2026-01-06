@@ -1,47 +1,87 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import { useUser } from "@clerk/nextjs";
+import { handleAPIResponse } from "@/lib/apiClient";
+import { type Friendship } from "@/types/friendship";
+import LoadingSpinner from "../ui/LoadingSpinner";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useState, useEffect } from "react";
 
 export default function FriendsTable() {
-    const [friends, setFriends] = useState<any>([]);
+    const [friendships, setFriendships] = useState<Friendship[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const { user } = useUser();
 
     useEffect(() => {
-        // Fetch friends data
         const fetchFriends = async () => {
-            // Simulate API call
-            const data = [
-                { name: "John Doe", since: "2023-01-01" },
-                { name: "Jane Smith", since: "2023-06-15" },
-            ];
-            setFriends(data);
+            try {
+                setIsLoading(true);
+                const res = await fetch("/api/friends", {
+                    method: "GET",
+                    headers: { "Content-Type": "application/json" },
+                });
+
+                const data = await handleAPIResponse<{ data: Friendship[] }>(res);
+                setFriendships(data.data);
+            } catch (error) {
+                console.log(error);
+            } finally {
+                setIsLoading(false);
+            }
         };
 
         fetchFriends();
     }, []);
 
+    if (isLoading) {
+        return <LoadingSpinner />;
+    }
+
+    if (friendships.length === 0) {
+        return (
+            <div className="text-center p-4">
+                <p>No friends yet. Start adding friends!</p>
+            </div>
+        );
+    }
+
     return (
         <Table>
             <TableHeader>
                 <TableRow>
-                    <TableHead>Friend Name</TableHead>
-                    <TableHead>Friends Since</TableHead>
+                    <TableHead>Friend ID</TableHead>
+                    <TableHead>Since</TableHead>
+                    <TableHead>Actions</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {/* Example row */}
-                <TableRow>
-                    <TableCell>John Doe</TableCell>
-                    <TableCell>Accepted</TableCell>
-                </TableRow>
+                {friendships.map((friendship) => {
+                    // Determine which ID is the friend (not the current user)
+                    const friendId = friendship.requesterId === user?.id
+                        ? friendship.addresseeId
+                        : friendship.requesterId;
+
+                    return (
+                        <TableRow key={friendship.id}>
+                            <TableCell>{friendId}</TableCell>
+                            <TableCell>
+                                {new Date(friendship.createdAt).toLocaleDateString()}
+                            </TableCell>
+                            <TableCell>
+                                <button className="text-red-500 hover:underline">
+                                    Unfriend
+                                </button>
+                            </TableCell>
+                        </TableRow>
+                    );
+                })}
             </TableBody>
         </Table>
     );
