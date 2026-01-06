@@ -127,13 +127,13 @@ export default function IncomingRequestsTable() {
                                 <div className="flex gap-2">
                                     <button
                                         onClick={() => handleAccept(request.id)}
-                                        className="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 duration-150"
+                                        className="px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700 duration-150"
                                     >
                                         Accept
                                     </button>
                                     <button
                                         onClick={() => handleReject(request.id)}
-                                        className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 duration-150"
+                                        className="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 duration-150"
                                     >
                                         Deny
                                     </button>

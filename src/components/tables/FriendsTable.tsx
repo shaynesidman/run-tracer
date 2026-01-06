@@ -18,26 +18,44 @@ export default function FriendsTable() {
     const [friends, setFriends] = useState<Friend[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
+    const fetchFriends = async () => {
+        try {
+            setIsLoading(true);
+            const res = await fetch("/api/friends", {
+                method: "GET",
+                headers: { "Content-Type": "application/json" },
+            });
+
+            const data = await handleAPIResponse<{ data: Friend[] }>(res);
+            setFriends(data.data);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     useEffect(() => {
-        const fetchFriends = async () => {
-            try {
-                setIsLoading(true);
-                const res = await fetch("/api/friends", {
-                    method: "GET",
-                    headers: { "Content-Type": "application/json" },
-                });
-
-                const data = await handleAPIResponse<{ data: Friend[] }>(res);
-                setFriends(data.data);
-            } catch (error) {
-                console.log(error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
         fetchFriends();
     }, []);
+
+    const handleUnfriend = async (friendshipId: number) => {
+        try {
+            const res = await fetch("/api/friends/reject", {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ friendshipId }),
+            });
+
+            await handleAPIResponse(res);
+
+            // Refetch friends after unfriending
+            await fetchFriends();
+        } catch (error) {
+            console.error(error);
+            alert("Failed to unfriend");
+        }
+    };
 
     if (isLoading) {
         return <LoadingSpinner />;
@@ -88,7 +106,10 @@ export default function FriendsTable() {
                                 {new Date(friend.createdAt).toLocaleDateString()}
                             </TableCell>
                             <TableCell>
-                                <button className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 duration-150">
+                                <button
+                                    onClick={() => handleUnfriend(friend.id)}
+                                    className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 duration-150"
+                                >
                                     Unfriend
                                 </button>
                             </TableCell>
