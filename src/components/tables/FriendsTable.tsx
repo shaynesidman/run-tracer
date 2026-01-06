@@ -75,7 +75,7 @@ export default function FriendsTable() {
                                 {new Date(friendship.createdAt).toLocaleDateString()}
                             </TableCell>
                             <TableCell>
-                                <button className="text-red-500 hover:underline">
+                                <button className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 duration-150">
                                     Unfriend
                                 </button>
                             </TableCell>

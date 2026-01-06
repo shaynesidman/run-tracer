@@ -108,7 +108,7 @@ export default function PendingRequestsTable() {
                             <TableCell>
                                 <button
                                     onClick={() => handleCancel(request.id)}
-                                    className="px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600 duration-150"
+                                    className="px-2 py-1 bg-gray-500 text-white rounded hover:bg-gray-600 duration-150"
                                 >
                                     Cancel
                                 </button>
