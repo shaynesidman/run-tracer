@@ -9,3 +9,10 @@ export const activitiesTable = pgTable("activities", {
     start: text("start").notNull().array(),
     userId: text("userId").notNull(),
 });
+
+export const friendsTable = pgTable("friends", {
+    id: serial("id").notNull().primaryKey(),
+    requesterId: text("requesterId").notNull(),
+    addresseeId: text("addresseeId").notNull(),
+    status: text("status").notNull(),
+});
