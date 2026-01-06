@@ -1,6 +1,6 @@
 export default function FriendsPage() {
     return (
-        <>
+        <div className="w-full px-2">
             <section>
                 <h2 className="self-start text-xl font-bold">Friends</h2>
             </section>
@@ -10,6 +10,6 @@ export default function FriendsPage() {
             <section>
                 <h2 className="self-start text-xl font-bold">Incoming Friend Requests</h2>
             </section>
-        </>
+        </div>
     );
 }
