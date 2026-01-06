@@ -4,8 +4,8 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { toast } from "sonner";
 import { handleAPIResponse } from "@/lib/apiClient";
-import { type OutgoingFriendRequest } from "@/types/friendship";
-import LoadingSpinner from "./ui/LoadingSpinner";
+import { type IncomingFriendRequest } from "@/types/friendship";
+import LoadingSpinner from "../ui/LoadingSpinner";
 import {
   Table,
   TableBody,
@@ -15,19 +15,19 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-export default function PendingRequestsTable() {
-    const [requests, setRequests] = useState<OutgoingFriendRequest[]>([]);
+export default function IncomingRequestsTable() {
+    const [requests, setRequests] = useState<IncomingFriendRequest[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     const fetchRequests = async () => {
         try {
             setIsLoading(true);
-            const res = await fetch("/api/friends/requests/outgoing", {
+            const res = await fetch("/api/friends/requests/incoming", {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
             });
 
-            const data = await handleAPIResponse<{ data: OutgoingFriendRequest[] }>(res);
+            const data = await handleAPIResponse<{ data: IncomingFriendRequest[] }>(res);
             setRequests(data.data);
         } catch (error) {
             console.log(error);
@@ -40,7 +40,27 @@ export default function PendingRequestsTable() {
         fetchRequests();
     }, []);
 
-    const handleCancel = async (friendshipId: number) => {
+    const handleAccept = async (friendshipId: number) => {
+        try {
+            const res = await fetch("/api/friends/accept", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ friendshipId }),
+            });
+
+            await handleAPIResponse(res);
+
+            toast.success("Friend request accepted");
+
+            // Refetch requests after accepting
+            await fetchRequests();
+        } catch (error) {
+            console.error(error);
+            toast.error("Failed to accept friend request");
+        }
+    };
+
+    const handleReject = async (friendshipId: number) => {
         try {
             const res = await fetch("/api/friends/reject", {
                 method: "DELETE",
@@ -50,13 +70,13 @@ export default function PendingRequestsTable() {
 
             await handleAPIResponse(res);
 
-            toast.success("Friend request cancelled");
+            toast.success("Friend request rejected");
 
-            // Refetch requests after canceling
+            // Refetch requests after rejecting
             await fetchRequests();
         } catch (error) {
             console.error(error);
-            toast.error("Failed to cancel friend request");
+            toast.error("Failed to reject friend request");
         }
     };
 
@@ -67,7 +87,7 @@ export default function PendingRequestsTable() {
     if (requests.length === 0) {
         return (
             <div className="text-center p-4">
-                <p>No pending friend requests</p>
+                <p>No incoming friend requests</p>
             </div>
         );
     }
@@ -109,12 +129,20 @@ export default function PendingRequestsTable() {
                                 {new Date(request.createdAt).toLocaleDateString()}
                             </TableCell>
                             <TableCell>
-                                <button
-                                    onClick={() => handleCancel(request.id)}
-                                    className="px-2 py-1 bg-gray-500 text-white rounded hover:bg-gray-600 duration-150"
-                                >
-                                    Cancel
-                                </button>
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={() => handleAccept(request.id)}
+                                        className="px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700 duration-150"
+                                    >
+                                        Accept
+                                    </button>
+                                    <button
+                                        onClick={() => handleReject(request.id)}
+                                        className="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 duration-150"
+                                    >
+                                        Deny
+                                    </button>
+                                </div>
                             </TableCell>
                         </TableRow>
                     );

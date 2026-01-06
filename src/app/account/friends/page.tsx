@@ -1,7 +1,7 @@
 import FriendsTable from "@/components/tables/FriendsTable";
 import UserSearch from "@/components/UserSearch";
-import IncomingRequestsTable from "@/components/IncomingRequestsTable";
-import PendingRequestsTable from "@/components/PendingRequestsTable";
+import IncomingRequestsTable from "@/components/tables/IncomingRequestsTable";
+import PendingRequestsTable from "@/components/tables/PendingRequestsTable";
 
 export default function FriendsPage() {
     return (
