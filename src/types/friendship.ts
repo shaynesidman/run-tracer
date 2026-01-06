@@ -18,3 +18,16 @@ export type IncomingFriendRequest = {
         imageUrl: string;
     };
 }
+
+export type OutgoingFriendRequest = {
+    id: number;
+    addresseeId: string;
+    createdAt: Date;
+    user: {
+        id: string;
+        email: string;
+        firstName: string | null;
+        lastName: string | null;
+        imageUrl: string;
+    };
+}

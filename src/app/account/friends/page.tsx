@@ -1,6 +1,7 @@
 import FriendsTable from "@/components/tables/FriendsTable";
 import UserSearch from "@/components/UserSearch";
 import IncomingRequestsTable from "@/components/IncomingRequestsTable";
+import PendingRequestsTable from "@/components/PendingRequestsTable";
 
 export default function FriendsPage() {
     return (
@@ -18,7 +19,8 @@ export default function FriendsPage() {
                 <IncomingRequestsTable />
             </section>
             <section>
-                <h2 className="self-start text-xl font-bold">Pending Friend Requests</h2>
+                <h2 className="self-start text-xl font-bold mb-4">Pending Friend Requests</h2>
+                <PendingRequestsTable />
             </section>
         </div>
     );
