@@ -5,3 +5,16 @@ export type Friendship = {
     status: string;
     createdAt: Date;
 }
+
+export type IncomingFriendRequest = {
+    id: number;
+    requesterId: string;
+    createdAt: Date;
+    user: {
+        id: string;
+        email: string;
+        firstName: string | null;
+        lastName: string | null;
+        imageUrl: string;
+    };
+}
