@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 import { db } from "@/db/db";
 import { friendsTable } from "@/db/schema";
 import { eq, or, and } from "drizzle-orm";
@@ -29,7 +29,40 @@ export async function GET() {
                 )
             );
 
-        return NextResponse.json({ data: friendships }, { status: 200 });
+        // Fetch user details for each friend
+        const client = await clerkClient();
+        const friendsWithUserInfo = await Promise.all(
+            friendships.map(async (friendship) => {
+                // Determine which ID is the friend (not the current user)
+                const friendId = friendship.requesterId === userId
+                    ? friendship.addresseeId
+                    : friendship.requesterId;
+
+                try {
+                    const friendUser = await client.users.getUser(friendId);
+                    return {
+                        id: friendship.id,
+                        friendId: friendId,
+                        createdAt: friendship.createdAt,
+                        user: {
+                            id: friendUser.id,
+                            email: friendUser.emailAddresses[0]?.emailAddress || "",
+                            firstName: friendUser.firstName,
+                            lastName: friendUser.lastName,
+                            imageUrl: friendUser.imageUrl,
+                        },
+                    };
+                } catch (error) {
+                    console.error(`Failed to fetch user ${friendId}:`, error);
+                    return null;
+                }
+            })
+        );
+
+        // Filter out any failed user fetches
+        const validFriends = friendsWithUserInfo.filter((friend) => friend !== null);
+
+        return NextResponse.json({ data: validFriends }, { status: 200 });
     } catch (error) {
         console.error("Error fetching friends:", error);
         return NextResponse.json(

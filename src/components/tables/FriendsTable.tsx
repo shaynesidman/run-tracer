@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useUser } from "@clerk/nextjs";
+import Image from "next/image";
 import { handleAPIResponse } from "@/lib/apiClient";
-import { type Friendship } from "@/types/friendship";
+import { type Friend } from "@/types/friendship";
 import LoadingSpinner from "../ui/LoadingSpinner";
 import {
   Table,
@@ -15,9 +15,8 @@ import {
 } from "@/components/ui/table";
 
 export default function FriendsTable() {
-    const [friendships, setFriendships] = useState<Friendship[]>([]);
+    const [friends, setFriends] = useState<Friend[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const { user } = useUser();
 
     useEffect(() => {
         const fetchFriends = async () => {
@@ -28,8 +27,8 @@ export default function FriendsTable() {
                     headers: { "Content-Type": "application/json" },
                 });
 
-                const data = await handleAPIResponse<{ data: Friendship[] }>(res);
-                setFriendships(data.data);
+                const data = await handleAPIResponse<{ data: Friend[] }>(res);
+                setFriends(data.data);
             } catch (error) {
                 console.log(error);
             } finally {
@@ -44,7 +43,7 @@ export default function FriendsTable() {
         return <LoadingSpinner />;
     }
 
-    if (friendships.length === 0) {
+    if (friends.length === 0) {
         return (
             <div className="text-center p-4">
                 <p>No friends yet. Start adding friends!</p>
@@ -56,23 +55,37 @@ export default function FriendsTable() {
         <Table>
             <TableHeader>
                 <TableRow>
-                    <TableHead>Friend ID</TableHead>
+                    <TableHead>Friend</TableHead>
+                    <TableHead>Email</TableHead>
                     <TableHead>Since</TableHead>
                     <TableHead>Actions</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {friendships.map((friendship) => {
-                    // Determine which ID is the friend (not the current user)
-                    const friendId = friendship.requesterId === user?.id
-                        ? friendship.addresseeId
-                        : friendship.requesterId;
+                {friends.map((friend) => {
+                    const displayName = friend.user.firstName && friend.user.lastName
+                        ? `${friend.user.firstName} ${friend.user.lastName}`
+                        : friend.user.email;
 
                     return (
-                        <TableRow key={friendship.id}>
-                            <TableCell>{friendId}</TableCell>
+                        <TableRow key={friend.id}>
                             <TableCell>
-                                {new Date(friendship.createdAt).toLocaleDateString()}
+                                <div className="flex items-center gap-3">
+                                    {friend.user.imageUrl && (
+                                        <Image
+                                            src={friend.user.imageUrl}
+                                            alt={displayName}
+                                            width={32}
+                                            height={32}
+                                            className="rounded-full"
+                                        />
+                                    )}
+                                    <span>{displayName}</span>
+                                </div>
+                            </TableCell>
+                            <TableCell>{friend.user.email}</TableCell>
+                            <TableCell>
+                                {new Date(friend.createdAt).toLocaleDateString()}
                             </TableCell>
                             <TableCell>
                                 <button className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 duration-150">

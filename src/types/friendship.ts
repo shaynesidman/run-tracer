@@ -6,6 +6,19 @@ export type Friendship = {
     createdAt: Date;
 }
 
+export type Friend = {
+    id: number;
+    friendId: string;
+    createdAt: Date;
+    user: {
+        id: string;
+        email: string;
+        firstName: string | null;
+        lastName: string | null;
+        imageUrl: string;
+    };
+}
+
 export type IncomingFriendRequest = {
     id: number;
     requesterId: string;
