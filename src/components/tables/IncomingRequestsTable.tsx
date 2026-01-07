@@ -96,9 +96,9 @@ export default function IncomingRequestsTable() {
         <Table>
             <TableHeader>
                 <TableRow>
-                    <TableHead>User</TableHead>
+                    <TableHead className="hidden md:table-cell">User</TableHead>
                     <TableHead>Email</TableHead>
-                    <TableHead>Date</TableHead>
+                    <TableHead className="hidden md:table-cell">Date</TableHead>
                     <TableHead>Actions</TableHead>
                 </TableRow>
             </TableHeader>
@@ -110,7 +110,7 @@ export default function IncomingRequestsTable() {
 
                     return (
                         <TableRow key={request.id}>
-                            <TableCell>
+                            <TableCell className="hidden md:table-cell">
                                 <div className="flex items-center gap-3">
                                     {request.user.imageUrl && (
                                         <Image
@@ -125,11 +125,11 @@ export default function IncomingRequestsTable() {
                                 </div>
                             </TableCell>
                             <TableCell>{request.user.email}</TableCell>
-                            <TableCell>
+                            <TableCell className="hidden md:table-cell">
                                 {new Date(request.createdAt).toLocaleDateString()}
                             </TableCell>
                             <TableCell>
-                                <div className="flex gap-2">
+                                <div className="flex flex-col md:flex-row gap-2">
                                     <button
                                         onClick={() => handleAccept(request.id)}
                                         className="px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700 duration-150"

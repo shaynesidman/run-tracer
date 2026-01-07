@@ -83,18 +83,18 @@ export default function UserSearch() {
     return (
         <div className="w-full">
             <form onSubmit={handleSearch} className="mb-6">
-                <div className="flex gap-2">
+                <div className="flex flex-col md:flex-row gap-2">
                     <input
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="Search by email..."
-                        className="flex-1 px-4 py-2 border border-[var(--bg-secondary)] rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        className="flex-1 px-3 py-2 md:px-4 border border-[var(--bg-secondary)] rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
                     />
                     <button
                         type="submit"
                         disabled={isSearching}
-                        className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed duration-150"
+                        className="px-3 py-2 md:px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed duration-150"
                     >
                         {isSearching ? "Searching..." : "Search"}
                     </button>
@@ -112,7 +112,7 @@ export default function UserSearch() {
                     {searchResults.map((user) => (
                         <div
                             key={user.id}
-                            className="flex items-center justify-between p-4 border border-[var(--bg-secondary)] rounded-lg"
+                            className="flex flex-col md:flex-row items-center justify-between p-4 border border-[var(--bg-secondary)] rounded-lg gap-4"
                         >
                             <div className="flex items-center gap-3">
                                 {user.imageUrl && (
@@ -136,7 +136,7 @@ export default function UserSearch() {
                             <button
                                 onClick={() => handleSendRequest(user.id)}
                                 disabled={isButtonDisabled(user)}
-                                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed duration-150"
+                                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed duration-150 w-full md:w-auto"
                             >
                                 {getButtonText(user)}
                             </button>

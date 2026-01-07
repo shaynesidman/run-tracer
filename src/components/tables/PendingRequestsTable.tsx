@@ -76,9 +76,9 @@ export default function PendingRequestsTable() {
         <Table>
             <TableHeader>
                 <TableRow>
-                    <TableHead>User</TableHead>
+                    <TableHead className="hidden md:table-cell">User</TableHead>
                     <TableHead>Email</TableHead>
-                    <TableHead>Date</TableHead>
+                    <TableHead className="hidden md:table-cell">Date</TableHead>
                     <TableHead>Actions</TableHead>
                 </TableRow>
             </TableHeader>
@@ -90,7 +90,7 @@ export default function PendingRequestsTable() {
 
                     return (
                         <TableRow key={request.id}>
-                            <TableCell>
+                            <TableCell className="hidden md:table-cell">
                                 <div className="flex items-center gap-3">
                                     {request.user.imageUrl && (
                                         <Image
@@ -105,7 +105,7 @@ export default function PendingRequestsTable() {
                                 </div>
                             </TableCell>
                             <TableCell>{request.user.email}</TableCell>
-                            <TableCell>
+                            <TableCell className="hidden md:table-cell">
                                 {new Date(request.createdAt).toLocaleDateString()}
                             </TableCell>
                             <TableCell>

@@ -76,9 +76,9 @@ export default function FriendsTable() {
         <Table>
             <TableHeader>
                 <TableRow>
-                    <TableHead>Friend</TableHead>
+                    <TableHead className="hidden md:table-cell">Friend</TableHead>
                     <TableHead>Email</TableHead>
-                    <TableHead>Since</TableHead>
+                    <TableHead className="hidden md:table-cell">Since</TableHead>
                     <TableHead>Actions</TableHead>
                 </TableRow>
             </TableHeader>
@@ -90,7 +90,7 @@ export default function FriendsTable() {
 
                     return (
                         <TableRow key={friend.id}>
-                            <TableCell>
+                            <TableCell className="hidden md:table-cell">
                                 <div className="flex items-center gap-3">
                                     {friend.user.imageUrl && (
                                         <Image
@@ -105,7 +105,7 @@ export default function FriendsTable() {
                                 </div>
                             </TableCell>
                             <TableCell>{friend.user.email}</TableCell>
-                            <TableCell>
+                            <TableCell className="hidden md:table-cell">
                                 {new Date(friend.createdAt).toLocaleDateString()}
                             </TableCell>
                             <TableCell>
