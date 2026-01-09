@@ -1,9 +1,22 @@
+"use client";
+
 import FriendsTable from "@/components/tables/FriendsTable";
 import UserSearch from "@/components/UserSearch";
 import IncomingRequestsTable from "@/components/tables/IncomingRequestsTable";
 import PendingRequestsTable from "@/components/tables/PendingRequestsTable";
+import { useAuth } from "@clerk/nextjs";
 
 export default function FriendsPage() {
+    const { userId } = useAuth();
+    
+    if (!userId) {
+        return (
+            <div className="w-full border border-[var(--bg-secondary)] text-center p-4 rounded-lg">
+                Sign in to see account info and recent activity
+            </div>
+        );
+    }
+
     return (
         <div className="w-full px-2 space-y-6">
             <section>
