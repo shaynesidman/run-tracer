@@ -94,7 +94,7 @@ export default function UserSearch() {
                     <button
                         type="submit"
                         disabled={isSearching}
-                        className="px-3 py-2 md:px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed duration-150"
+                        className="px-4 py-2 bg-[var(--bg-primary)] border border-[var(--bg-secondary)] rounded-lg hover:bg-[var(--bg-secondary)] hover:cursor-pointer duration-150"
                     >
                         {isSearching ? "Searching..." : "Search"}
                     </button>
