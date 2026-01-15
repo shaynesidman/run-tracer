@@ -5,6 +5,7 @@ import { handleAPIResponse } from "@/lib/apiClient";
 import { type Activity } from "@/types/activity";
 import SocialPost from "./SocialPost";
 import LoadingSpinner from "./ui/LoadingSpinner"
+import { useRouter } from "next/navigation";
 
 interface SocialFeedProps {
     onLoadingChange?: (isLoading: boolean) => void;
@@ -14,12 +15,14 @@ export default function SocialFeed({ onLoadingChange }: SocialFeedProps) {
     const [activities, setActivities] = useState<Activity[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
+    const router = useRouter();
+
     useEffect(() => {
         const fetchActivities = async () => {
             setIsLoading(true);
             onLoadingChange?.(true);
             try {
-                const res = await fetch("/api/fetch/activities", {
+                const res = await fetch("/api/fetch/friendsActivities", {
                     method: "GET",
                     headers: { "Content-Type": "application/json" }
                 });
@@ -39,6 +42,17 @@ export default function SocialFeed({ onLoadingChange }: SocialFeedProps) {
 
     if (isLoading) {
         return <LoadingSpinner />
+    }
+
+    if (!isLoading && activities.length === 0) {
+        return (
+            <button 
+                className="w-full border border-[var(--bg-secondary)] text-center p-4 rounded-lg hover:bg-[var(--bg-secondary)] hover:cursor-pointer duration-150"
+                onClick={() => {router.push("/account/friends")}}
+            >
+                Add friends to see their activities here!
+            </button>
+        );
     }
 
     return (
