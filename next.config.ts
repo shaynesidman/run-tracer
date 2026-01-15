@@ -6,7 +6,14 @@ const nextConfig: NextConfig = {
 
 module.exports = {
     images: {
-        remotePatterns: ["img.clerk.com"],
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: 'example.com',
+                port: '',
+                pathname: '/images/**',
+            }
+        ]
     },
 }
 
