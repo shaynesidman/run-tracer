@@ -11,6 +11,8 @@ export default function SocialPost({ activity }: { activity: Activity }) {
     const [user, setUser] = useState<UserData | null>(null);
     const [loading, setLoading] = useState(true);
 
+    console.log(activity)
+
     useEffect(() => {
         const fetchUser = async () => {
             try {
